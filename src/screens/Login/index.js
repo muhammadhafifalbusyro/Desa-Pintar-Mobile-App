@@ -16,6 +16,8 @@ class Login extends React.Component {
   state = {
     username: '7501065706620001',
     password: '19620617',
+    // username:'',
+    // password:'',
     loading: false,
   };
   login = () => {
@@ -34,8 +36,8 @@ class Login extends React.Component {
         },
         body: formData,
       })
-        .then(res => res.json())
-        .then(resJson => {
+        .then((res) => res.json())
+        .then((resJson) => {
           console.log(resJson);
           if (resJson.access) {
             AsyncStorage.setItem('access', resJson.access);
@@ -58,7 +60,7 @@ class Login extends React.Component {
             this.setState({loading: false});
           }
         })
-        .catch(er => {
+        .catch((er) => {
           console.log(er);
           ToastAndroid.show(
             'Login gagal',
@@ -96,7 +98,7 @@ class Login extends React.Component {
                 style={styles.textInput}
                 value={this.state.username}
                 keyboardType={'number-pad'}
-                onChangeText={teks => this.setState({username: teks})}
+                onChangeText={(teks) => this.setState({username: teks})}
               />
             </View>
           </View>
@@ -107,7 +109,7 @@ class Login extends React.Component {
                 style={styles.textInput}
                 secureTextEntry={true}
                 value={this.state.password}
-                onChangeText={teks => this.setState({password: teks})}
+                onChangeText={(teks) => this.setState({password: teks})}
               />
             </View>
           </View>

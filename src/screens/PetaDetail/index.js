@@ -244,8 +244,7 @@ class PetaDetail extends React.Component {
             <ImageBackground
               style={styles.boxCamera}
               source={{
-                uri:
-                  'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
+                uri: this.props.route.params.gambar,
               }}>
               <TouchableNativeFeedback
                 onPress={() =>

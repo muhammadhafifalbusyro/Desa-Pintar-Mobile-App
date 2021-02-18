@@ -25,9 +25,10 @@ class Lapor extends React.Component {
     this.getDataLapor();
   }
   getDataLapor = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
       this.setState({loading: true});
-      const url = 'https://api.istudios.id/v1/lapor/?include[]=kategori.*';
+      const url =
+        'https://api.istudios.id/v1/lapor/?include[]=kategori&include[]=status';
       const token = value;
       fetch(url, {
         method: 'GET',
@@ -35,8 +36,8 @@ class Lapor extends React.Component {
           Authorization: 'Bearer ' + token,
         },
       })
-        .then(res => res.json())
-        .then(resJson => {
+        .then((res) => res.json())
+        .then((resJson) => {
           console.log(resJson.data);
           if (resJson.data) {
             this.setState({data: resJson.data, loading: false});
@@ -54,7 +55,7 @@ class Lapor extends React.Component {
             );
           }
         })
-        .catch(er => {
+        .catch((er) => {
           this.setState({loading: false});
           console.log(er);
           ToastAndroid.show(
@@ -64,6 +65,21 @@ class Lapor extends React.Component {
           );
         });
     });
+  };
+  renderStatus = (status) => {
+    if (status == null) {
+      return (
+        <View style={{...styles.statusBox, backgroundColor: 'white'}}>
+          <Text style={styles.text2}>{status == null ? '' : status.nama}</Text>
+        </View>
+      );
+    } else if (status != null && status.nama == 'Belum Ditanggapi') {
+      return (
+        <View style={{...styles.statusBox, backgroundColor: 'orange'}}>
+          <Text style={styles.text2}>{status == null ? '' : status.nama}</Text>
+        </View>
+      );
+    }
   };
   render() {
     return (
@@ -89,9 +105,7 @@ class Lapor extends React.Component {
                     <Text style={styles.text1}>
                       #{value.kategori == null ? '' : value.kategori.nama}
                     </Text>
-                    <View style={styles.statusBox}>
-                      <Text style={styles.text2}>Belum ditanggapiee</Text>
-                    </View>
+                    {this.renderStatus(value.status)}
                   </View>
                   <View style={styles.boxTitle}>
                     <Text style={styles.textTitle}>{value.judul}</Text>
@@ -177,7 +191,8 @@ const styles = StyleSheet.create({
   },
   statusBox: {
     backgroundColor: '#FA7F72',
-    padding: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
     borderRadius: 3,
   },
   text1: {

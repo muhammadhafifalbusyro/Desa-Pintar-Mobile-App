@@ -42,7 +42,7 @@ class Peta extends React.Component {
     this.getBidang();
   }
   getBidang = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
       const token = value;
       const url = 'https://api.istudios.id/v1/sigbidang/me/';
       fetch(url, {
@@ -51,8 +51,8 @@ class Peta extends React.Component {
           Authorization: 'Bearer ' + token,
         },
       })
-        .then(res => res.json())
-        .then(resJson => {
+        .then((res) => res.json())
+        .then((resJson) => {
           // if (resJson.data) {
           //   this.setState({dataKategori: resJson.data});
           //   ToastAndroid.show(
@@ -85,7 +85,7 @@ class Peta extends React.Component {
             );
           }
         })
-        .catch(er => {
+        .catch((er) => {
           ToastAndroid.show(
             'Data gagal didapatkan',
             ToastAndroid.SHORT,
@@ -128,13 +128,13 @@ class Peta extends React.Component {
                       nbt: value.nbt,
                       geometry: value.geometry,
                       namabidang: value.namabidang,
+                      gambar: value.gambar_atas,
                     })
                   }>
                   <View style={styles.boxContent}>
                     <Image
                       source={{
-                        uri:
-                          'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image.jpg',
+                        uri: value.gambar_atas,
                       }}
                       style={styles.images}
                     />
