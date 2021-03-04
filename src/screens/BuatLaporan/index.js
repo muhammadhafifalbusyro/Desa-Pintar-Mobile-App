@@ -12,6 +12,7 @@ import {
   Modal,
   ToastAndroid,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,12 +42,14 @@ class BuatLaporan extends React.Component {
     judul: '',
     deskripsi: '',
     modalVisible: false,
+    loading: false,
   };
   componentDidMount() {
     this.getDataKategori();
   }
   getDataKategori = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({loading: true});
       const token = value;
       const url = 'https://api.istudios.id/v1/kategorilapor/';
       fetch(url, {
@@ -55,16 +58,17 @@ class BuatLaporan extends React.Component {
           Authorization: 'Bearer ' + token,
         },
       })
-        .then(res => res.json())
-        .then(resJson => {
+        .then((res) => res.json())
+        .then((resJson) => {
           if (resJson.data) {
-            this.setState({dataKategori: resJson.data});
+            this.setState({dataKategori: resJson.data, loading: false});
             ToastAndroid.show(
               'Data berhasil didapatkan',
               ToastAndroid.SHORT,
               ToastAndroid.CENTER,
             );
           } else {
+            this.setState({loading: false});
             console.log('error');
             ToastAndroid.show(
               'Data gagal didapatkan',
@@ -73,7 +77,8 @@ class BuatLaporan extends React.Component {
             );
           }
         })
-        .catch(er => {
+        .catch((er) => {
+          this.setState({loading: false});
           ToastAndroid.show(
             'Data gagal didapatkan',
             ToastAndroid.SHORT,
@@ -83,7 +88,7 @@ class BuatLaporan extends React.Component {
     });
   };
   pickerImage = () => {
-    ImagePicker.showImagePicker(options, response => {
+    ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
 
       if (response.didCancel) {
@@ -137,7 +142,7 @@ class BuatLaporan extends React.Component {
     }
   };
   submit = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
       const {fileName, kategoriID, judul, deskripsi} = this.state;
       const url = 'https://api.istudios.id/v1/lapor/';
       if (
@@ -178,8 +183,8 @@ class BuatLaporan extends React.Component {
             },
             body: formData,
           })
-            .then(response => response.json())
-            .then(json => {
+            .then((response) => response.json())
+            .then((json) => {
               if (json.data) {
                 this.setState({modalVisible: false});
                 ToastAndroid.show(
@@ -197,7 +202,7 @@ class BuatLaporan extends React.Component {
                 );
               }
             })
-            .catch(error => {
+            .catch((error) => {
               this.setState({modalVisible: false});
               console.log(error);
               ToastAndroid.show(
@@ -225,7 +230,12 @@ class BuatLaporan extends React.Component {
           transparent={true}
           onRequestClose={() => this.setState({visible: false})}>
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
             <View
               style={{
                 height: '40%',
@@ -289,7 +299,12 @@ class BuatLaporan extends React.Component {
             );
           }}>
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
             <View
               style={{
                 height: 100,
@@ -314,7 +329,15 @@ class BuatLaporan extends React.Component {
           />
           <Text style={styles.textHeader}>Lapor Online</Text>
         </View>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              colors={['#19D2BA']}
+              onRefresh={() => this.getDataKategori()}
+            />
+          }>
           <View style={styles.cameraContainer}>{this.imageBox()}</View>
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Pilih Kategori</Text>
@@ -334,14 +357,14 @@ class BuatLaporan extends React.Component {
               style={styles.childBox}
               placeholder="Masukan Judul"
               value={this.state.judul}
-              onChangeText={teks => this.setState({judul: teks})}
+              onChangeText={(teks) => this.setState({judul: teks})}
             />
           </View>
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Deskripsi</Text>
             <TextInput
               value={this.state.deskripsi}
-              onChangeText={teks => this.setState({deskripsi: teks})}
+              onChangeText={(teks) => this.setState({deskripsi: teks})}
               style={{
                 ...styles.childBox,
                 height: 150,

@@ -10,8 +10,12 @@ import {
   TextInput,
   ImageBackground,
   Modal,
+  ToastAndroid,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class PetaDetail extends React.Component {
   state = {
@@ -32,6 +36,136 @@ class PetaDetail extends React.Component {
         metode: 'Kerja Sama',
       },
     ],
+    dataKategori: [],
+    visibleKategori: false,
+    kategoriID: '',
+    kategori: 'Pilih Kategori',
+    loading: false,
+    harga: '',
+    narasi: '',
+    modalVisible: false,
+  };
+  componentDidMount() {
+    this.getDataKategori();
+  }
+  submitData = () => {
+    AsyncStorage.getItem('access').then((value) => {
+      const {kategoriID, metodeDefault, harga, narasi} = this.state;
+      const url = 'https://api.istudios.id/v1/potensi/';
+      ToastAndroid.show('Belum Bisa', ToastAndroid.SHORT, ToastAndroid.CENTER);
+      return false;
+
+      console.log(this.state);
+      if (
+        kategoriID != '' &&
+        metodeDefault != '' &&
+        harga != '' &&
+        narasi != ''
+      ) {
+        this.setState({modalVisible: true});
+        const formData = new FormData();
+
+        let makeKoordinat = {
+          lat: this.props.route.params.latitude,
+          lng: this.props.route.params.longitude,
+        };
+
+        formData.append('kategori', kategoriID);
+        formData.append('jenis_promosi', metodeDefault);
+        formData.append('nama_usaha', narasi);
+        formData.append('harga', harga);
+        formData.append('gambar', this.props.route.params.gambar);
+        formData.append('koordinat', JSON.stringify(makeKoordinat));
+
+        console.log(formData);
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${value}`,
+          },
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((json) => {
+            console.log(json);
+            // this.setState({modalVisible: false});
+            if (json.data) {
+              this.setState({modalVisible: false});
+              ToastAndroid.show(
+                'Laporan berhasil ditambahkan',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
+              this.props.navigation.goBack();
+            } else {
+              this.setState({modalVisible: false});
+              ToastAndroid.show(
+                'Laporan gagal ditambahkan',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
+            }
+          })
+          .catch((error) => {
+            this.setState({modalVisible: false});
+            console.log(error);
+            ToastAndroid.show(
+              'Jaringan error',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          });
+      } else {
+        ToastAndroid.show(
+          'Data tidak boleh kosong',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      }
+    });
+  };
+  getDataKategori = () => {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({loading: true});
+      const token = value;
+      const url = 'https://api.istudios.id/v1/kategoripotensi/';
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      })
+        .then((res) => res.json())
+        .then((resJson) => {
+          if (resJson.data) {
+            this.setState({dataKategori: resJson.data, loading: false});
+            ToastAndroid.show(
+              'Data berhasil didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            this.setState({loading: false});
+            console.log('error');
+            ToastAndroid.show(
+              'Data gagal didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch((er) => {
+          this.setState({loading: false});
+          ToastAndroid.show(
+            'Data gagal didapatkan',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
   };
   methodeView = () => {
     if (this.state.metodeDefault == 'Jual') {
@@ -39,7 +173,13 @@ class PetaDetail extends React.Component {
         <View style={{width: '100%'}}>
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Harga Per M2</Text>
-            <TextInput style={styles.childBox} placeholder="Masukan Harga" />
+            <TextInput
+              style={styles.childBox}
+              placeholder="Masukan Harga"
+              on
+              keyboardType="number-pad"
+              onChangeText={(teks) => this.setState({harga: teks})}
+            />
           </View>
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Narasi</Text>
@@ -50,10 +190,11 @@ class PetaDetail extends React.Component {
               }}
               placeholder="Masukan Narasi"
               textAlignVertical="top"
+              onChangeText={(teks) => this.setState({narasi: teks})}
             />
           </View>
           <View style={styles.boxContent}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback onPress={() => this.submitData()}>
               <View
                 style={{
                   ...styles.childBox,
@@ -75,7 +216,12 @@ class PetaDetail extends React.Component {
         <View style={{width: '100%'}}>
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Harga Sewa Per Tahun</Text>
-            <TextInput style={styles.childBox} placeholder="Masukan Harga" />
+            <TextInput
+              style={styles.childBox}
+              placeholder="Masukan Harga"
+              keyboardType="number-pad"
+              onChangeText={(teks) => this.setState({harga: teks})}
+            />
           </View>
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Narasi</Text>
@@ -86,10 +232,11 @@ class PetaDetail extends React.Component {
               }}
               placeholder="Masukan Narasi"
               textAlignVertical="top"
+              onChangeText={(teks) => this.setState({narasi: teks})}
             />
           </View>
           <View style={styles.boxContent}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback onPress={() => this.submitData()}>
               <View
                 style={{
                   ...styles.childBox,
@@ -118,10 +265,11 @@ class PetaDetail extends React.Component {
               }}
               placeholder="Masukan Narasi"
               textAlignVertical="top"
+              onChangeText={(teks) => this.setState({narasi: teks})}
             />
           </View>
           <View style={styles.boxContent}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback onPress={() => this.submitData()}>
               <View
                 style={{
                   ...styles.childBox,
@@ -156,6 +304,18 @@ class PetaDetail extends React.Component {
               />
             </View>
           </View>
+          <View style={styles.boxContent}>
+            <Text style={styles.text1}>Pilih Kategori</Text>
+            <View style={styles.childBox}>
+              <Text style={{color: '#444444'}}>{this.state.kategori}</Text>
+              <Icon
+                name="chevron-down"
+                size={25}
+                onPress={() => this.setState({visibleKategori: true})}
+                color="grey"
+              />
+            </View>
+          </View>
           {this.methodeView()}
         </View>
       );
@@ -165,12 +325,111 @@ class PetaDetail extends React.Component {
     return (
       <View style={styles.container}>
         <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={this.state.visibleKategori}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => this.setState({visibleKategori: false})}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                height: '40%',
+                width: '90%',
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+              }}>
+              <View
+                style={{
+                  height: 50,
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderBottomWidth: 1,
+                  borderColor: 'rgba(0,0,0,0.3)',
+                }}>
+                <Text style={{fontWeight: 'bold'}}>Pilih Kategori</Text>
+              </View>
+              <ScrollView style={{flex: 1, padding: 10}}>
+                {this.state.dataKategori.map((value, key) => {
+                  return (
+                    <View
+                      key={key}
+                      style={{
+                        height: 40,
+                        marginBottom: 3,
+                        width: '100%',
+                        padding: 5,
+                        borderBottomWidth: 1,
+                        borderColor: 'rgba(0,0,0,0.3)',
+                      }}>
+                      <Text
+                        onPress={() =>
+                          this.setState({
+                            kategoriID: value.id,
+                            kategori: value.nama,
+                            visibleKategori: false,
+                          })
+                        }>
+                        {value.nama}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+        <Modal
           visible={this.state.dropdown}
           animationType="slide"
           transparent={true}
           onRequestClose={() => this.setState({dropdown: false})}>
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
             <View
               style={{
                 height: '30%',
@@ -228,7 +487,17 @@ class PetaDetail extends React.Component {
           />
           <Text style={styles.textHeader}>Peta</Text>
         </View>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              colors={['#19D2BA']}
+              onRefresh={() => {
+                this.getDataKategori();
+              }}
+            />
+          }>
           <Text
             style={{
               width: '100%',
@@ -261,23 +530,38 @@ class PetaDetail extends React.Component {
           </View>
           <Text
             style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
-            Luas : 2500m2
+            Luas :{' '}
+            {this.props.route.params.luas == null
+              ? ''
+              : this.props.route.params.luas}
           </Text>
           <Text
             style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
-            Status Hak : 2500m2
+            Status Hak :{' '}
+            {this.props.route.params.status_hak == null
+              ? ''
+              : this.props.route.params.status_hak}
           </Text>
           <Text
             style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
-            Penggunaan Tanah : 2500m2
+            Penggunaan Tanah :{' '}
+            {this.props.route.params.penggunaan_tanah == null
+              ? ''
+              : this.props.route.params.penggunaan_tanah}
           </Text>
           <Text
             style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
-            Pemanfaatan Tanah : 2500m2
+            Pemanfaatan Tanah :{' '}
+            {this.props.route.params.pemanfaatan_tanah == null
+              ? ''
+              : this.props.route.params.pemanfaatan_tanah}
           </Text>
           <Text
             style={{marginHorizontal: 10, marginBottom: 10, color: '#444444'}}>
-            RT/RW : 2500m2
+            RT/RW :{' '}
+            {this.props.route.params.rtrw == null
+              ? ''
+              : this.props.route.params.rtrw}
           </Text>
           <View style={styles.boxContent}>
             <TouchableNativeFeedback

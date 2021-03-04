@@ -12,6 +12,7 @@ import {
   ToastAndroid,
   Modal,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -30,13 +31,15 @@ class TambahLayanan extends React.Component {
     keperluan: '',
     token: '',
     modalVisible: false,
+    loading: false,
   };
   componentDidMount() {
     this.getData();
   }
 
   getData = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({loading: true});
       console.log('ini token profil ' + value);
       const url = 'https://api.istudios.id/v1/users/me';
       fetch(url, {
@@ -45,8 +48,8 @@ class TambahLayanan extends React.Component {
           Authorization: `Bearer ${value}`,
         },
       })
-        .then(res => res.json())
-        .then(reJson => {
+        .then((res) => res.json())
+        .then((reJson) => {
           console.log(reJson);
           if (reJson.profile) {
             this.setState({
@@ -58,6 +61,7 @@ class TambahLayanan extends React.Component {
               agama: reJson.profile.agama,
               pekerjaan: reJson.profile.pekerjaan,
               token: value,
+              loading: false,
             });
             ToastAndroid.show(
               'Berhasil mengambil data',
@@ -65,6 +69,7 @@ class TambahLayanan extends React.Component {
               ToastAndroid.CENTER,
             );
           } else {
+            this.setState({loading: false});
             ToastAndroid.show(
               'Gagal mengambil data',
               ToastAndroid.SHORT,
@@ -72,7 +77,8 @@ class TambahLayanan extends React.Component {
             );
           }
         })
-        .catch(er => {
+        .catch((er) => {
+          this.setState({loading: false});
           console.log(er);
           ToastAndroid.show(
             'Gagal mengambil data',
@@ -134,8 +140,8 @@ class TambahLayanan extends React.Component {
       },
       body: formData,
     })
-      .then(res => res.json())
-      .then(resJson => {
+      .then((res) => res.json())
+      .then((resJson) => {
         console.log(resJson);
         if (resJson.data) {
           ToastAndroid.show(
@@ -153,7 +159,7 @@ class TambahLayanan extends React.Component {
           this.setState({modalVisible: false});
         }
       })
-      .catch(er => {
+      .catch((er) => {
         console.log(er);
         ToastAndroid.show(
           'Jaringan error',
@@ -203,7 +209,15 @@ class TambahLayanan extends React.Component {
           />
           <Text style={styles.textHeader}>Layanan</Text>
         </View>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              colors={['#19D2BA']}
+              onRefresh={() => this.getData()}
+            />
+          }>
           <View style={styles.boxTitle}>
             <Text
               style={{
@@ -320,7 +334,7 @@ class TambahLayanan extends React.Component {
               <TextInput
                 style={styles.textInput}
                 value={this.state.keperluan}
-                onChangeText={teks => this.setState({keperluan: teks})}
+                onChangeText={(teks) => this.setState({keperluan: teks})}
               />
             </View>
           </View>

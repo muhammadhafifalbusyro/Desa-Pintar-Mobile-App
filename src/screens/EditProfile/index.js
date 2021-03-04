@@ -9,8 +9,12 @@ import {
   TouchableNativeFeedback,
   ToastAndroid,
   RefreshControl,
+  TextInput,
+  ActivityIndicator,
+  Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/Feather';
 
 class EditProfile extends React.Component {
   state = {
@@ -22,14 +26,61 @@ class EditProfile extends React.Component {
     jenisKelamin: '',
     pendidikanTerakhir: '',
     potensi: '',
+    no_hp: '',
     loading: false,
+    loadingSimpan: false,
   };
   componentDidMount() {
     this.getData();
   }
-
+  updateData = () => {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({loadingSimpan: true});
+      const url = `https://api.istudios.id/v1/penduduk/${this.state.id}/`;
+      const formData = new FormData();
+      formData.append('nik', this.state.nik);
+      formData.append('no_hp', this.state.no_hp),
+        formData.append('pendidikan', this.state.pendidikanTerakhir);
+      fetch(url, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${value}`,
+        },
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((resJson) => {
+          console.log(resJson);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({loadingSimpan: false});
+            this.props.navigation.goBack();
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({loadingSimpan: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    });
+  };
   getData = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
       this.setState({loading: true});
       console.log('ini token profil ' + value);
       const url = 'https://api.istudios.id/v1/users/me';
@@ -39,8 +90,8 @@ class EditProfile extends React.Component {
           Authorization: `Bearer ${value}`,
         },
       })
-        .then(res => res.json())
-        .then(reJson => {
+        .then((res) => res.json())
+        .then((reJson) => {
           console.log(reJson);
           if (reJson.profile) {
             this.setState({
@@ -48,11 +99,13 @@ class EditProfile extends React.Component {
               nik: reJson.profile.nik,
               tempatLahir: reJson.profile.tempat_lahir,
               tanggalLahir: reJson.profile.tanggal_lahir,
-              jenisKelamin: reJson.profile.jk,
+              jenisKelamin: reJson.profile.kelamin,
               pendidikanTerakhir: reJson.profile.pendidikan,
               potensi: reJson.profile.potensi,
               alamat: reJson.profile.alamat,
+              no_hp: reJson.profile.no_hp,
               loading: false,
+              id: reJson.profile.id,
             });
             ToastAndroid.show(
               'Berhasil mengambil data',
@@ -68,7 +121,7 @@ class EditProfile extends React.Component {
             );
           }
         })
-        .catch(er => {
+        .catch((er) => {
           this.setState({loading: false});
           console.log(er);
           ToastAndroid.show(
@@ -102,13 +155,19 @@ class EditProfile extends React.Component {
             <View style={styles.profileContent}>
               <Text style={styles.textProfileContent}>{this.state.nama}</Text>
               <Text style={styles.textProfileContent}>{this.state.nik}</Text>
-              <TouchableOpacity
-                style={styles.buttonEditProfile}
-                activeOpacity={0.8}
-                delayPressIn={1}
-                onPress={() => this.props.navigation.goBack()}>
-                <Text style={styles.textButtonEditProfile}>Simpan</Text>
-              </TouchableOpacity>
+              {this.state.loadingSimpan ? (
+                <View style={styles.buttonEditProfile}>
+                  <ActivityIndicator size="small" color="white" />
+                </View>
+              ) : (
+                <TouchableOpacity
+                  style={styles.buttonEditProfile}
+                  activeOpacity={0.8}
+                  delayPressIn={1}
+                  onPress={() => this.updateData()}>
+                  <Text style={styles.textButtonEditProfile}>Simpan</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
           <View style={styles.boxProfile2}>
@@ -116,6 +175,30 @@ class EditProfile extends React.Component {
             <Text style={styles.textprofile2}>
               {this.state.tempatLahir}, {this.state.tanggalLahir}
             </Text>
+          </View>
+          <View style={styles.boxProfile2}>
+            <Text style={styles.textProfile}>Nomor Kontak</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <TextInput
+                style={{
+                  ...styles.textprofile2,
+                  backgroundColor: 'rgba(0,0,0,0.1)',
+                  width: '90%',
+                  height: 40,
+                  borderRadius: 5,
+                }}
+                keyboardType="number-pad"
+                value={this.state.no_hp}
+                onChangeText={(teks) => this.setState({no_hp: teks})}
+              />
+              <Icon name="clipboard" size={25} color="#444444" />
+            </View>
           </View>
           <View style={styles.boxProfile2}>
             <Text style={styles.textProfile}>Alamat</Text>
@@ -127,9 +210,28 @@ class EditProfile extends React.Component {
           </View>
           <View style={styles.boxProfile2}>
             <Text style={styles.textProfile}>Pendidikan Terakhir</Text>
-            <Text style={styles.textprofile2}>
-              {this.state.pendidikanTerakhir}
-            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <TextInput
+                style={{
+                  ...styles.textprofile2,
+                  backgroundColor: 'rgba(0,0,0,0.1)',
+                  width: '90%',
+                  height: 40,
+                  borderRadius: 5,
+                }}
+                value={this.state.pendidikanTerakhir}
+                onChangeText={(teks) =>
+                  this.setState({pendidikanTerakhir: teks})
+                }
+              />
+              <Icon name="clipboard" size={25} color="#444444" />
+            </View>
           </View>
           <View style={styles.boxProfile3}>
             <View>
@@ -147,14 +249,6 @@ class EditProfile extends React.Component {
               }}>
               <Text style={{color: 'white'}}>Edit Potensi</Text>
             </TouchableOpacity>
-          </View>
-          <View style={styles.boxLogout}>
-            <TouchableNativeFeedback
-              onPress={() => this.props.navigation.replace('Login')}>
-              <View style={styles.buttonLogout}>
-                <Text style={styles.textButtonLogout}>LOGOUT</Text>
-              </View>
-            </TouchableNativeFeedback>
           </View>
         </ScrollView>
       </View>
@@ -202,7 +296,7 @@ const styles = StyleSheet.create({
     color: '#444444',
   },
   buttonEditProfile: {
-    padding: 3,
+    padding: 5,
     backgroundColor: '#19D2BA',
     marginLeft: 10,
     marginTop: 5,

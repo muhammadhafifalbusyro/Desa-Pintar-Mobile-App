@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   TouchableNativeFeedback,
   ToastAndroid,
+  RefreshControl,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -37,12 +38,28 @@ class Peta extends React.Component {
     //   },
     // ],
     data: [],
+    loading: false,
+    dota: [
+      {
+        latitude: 0.78203012095,
+        longitude: 122.860741697,
+      },
+      {
+        latitude: 0.78203012095,
+        longitude: 122.856768,
+      },
+      {
+        latitude: 0.78203012095,
+        longitude: 122.86777,
+      },
+    ],
   };
   componentDidMount() {
     this.getBidang();
   }
   getBidang = () => {
     AsyncStorage.getItem('access').then((value) => {
+      this.setState({loading: true});
       const token = value;
       const url = 'https://api.istudios.id/v1/sigbidang/me/';
       fetch(url, {
@@ -70,13 +87,14 @@ class Peta extends React.Component {
           // }
           if (resJson.kepemilikan) {
             console.log(resJson.kepemilikan);
-            this.setState({data: resJson.kepemilikan});
+            this.setState({data: resJson.kepemilikan, loading: false});
             ToastAndroid.show(
               'Data berhasil didapatkan',
               ToastAndroid.SHORT,
               ToastAndroid.CENTER,
             );
           } else {
+            this.setState({loading: false});
             console.log('error');
             ToastAndroid.show(
               'Data gagal didapatkan',
@@ -86,6 +104,7 @@ class Peta extends React.Component {
           }
         })
         .catch((er) => {
+          this.setState({loading: false});
           ToastAndroid.show(
             'Data gagal didapatkan',
             ToastAndroid.SHORT,
@@ -100,9 +119,17 @@ class Peta extends React.Component {
         <View style={styles.header}>
           <Text style={styles.textHeader}>Peta</Text>
         </View>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              colors={['#19D2BA']}
+              onRefresh={() => this.getBidang()}
+            />
+          }>
           <View style={styles.boxMap}>
-            <MapView
+            {/* <MapView
               style={{
                 height: 150,
                 width: '100%',
@@ -113,7 +140,32 @@ class Peta extends React.Component {
                 latitudeDelta: 0.009,
                 longitudeDelta: 0.009,
               }}
-            />
+            /> */}
+            <MapView
+              style={{
+                height: 150,
+                width: '100%',
+              }}
+              initialRegion={{
+                latitude: 0.7818,
+                longitude: 122.8608,
+                latitudeDelta: 0.009,
+                longitudeDelta: 0.009,
+              }}>
+              {this.state.data.map((value, key) => {
+                return (
+                  <MapView.Marker
+                    key={key}
+                    coordinate={{
+                      latitude: value.latitude,
+                      longitude: value.longitude,
+                    }}
+                    title={value.namabidang}
+                    description={value.penggunaan_tanah}
+                  />
+                );
+              })}
+            </MapView>
           </View>
           <View style={styles.boxTitle}>
             <Text style={styles.title}>Bidang Tanah dan Properti</Text>
@@ -129,6 +181,13 @@ class Peta extends React.Component {
                       geometry: value.geometry,
                       namabidang: value.namabidang,
                       gambar: value.gambar_atas,
+                      latitude: value.latitude,
+                      longitude: value.longitude,
+                      luas: value.luas,
+                      status_hak: value.status_hak,
+                      penggunaan_tanah: value.penggunaan_tanah,
+                      pemanfaatan_tanah: value.pemanfaatan_tanah,
+                      rtrw: value.rtrw,
                     })
                   }>
                   <View style={styles.boxContent}>

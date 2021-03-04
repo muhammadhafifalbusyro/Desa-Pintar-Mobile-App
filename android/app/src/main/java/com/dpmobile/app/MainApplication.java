@@ -1,4 +1,4 @@
-package com.desapintarmobileapp;
+package com.dpmobile.app;
 
 import android.app.Application;
 import android.content.Context;

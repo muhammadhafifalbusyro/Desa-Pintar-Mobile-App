@@ -1,4 +1,4 @@
-package com.desapintarmobileapp;
+package com.dpmobile.app;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "DesaPintarMobileApp";
+    return "DP";
   }
 }

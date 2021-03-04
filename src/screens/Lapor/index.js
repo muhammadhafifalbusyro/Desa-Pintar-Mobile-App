@@ -75,7 +75,31 @@ class Lapor extends React.Component {
       );
     } else if (status != null && status.nama == 'Belum Ditanggapi') {
       return (
-        <View style={{...styles.statusBox, backgroundColor: 'orange'}}>
+        <View style={{...styles.statusBox, backgroundColor: '#c1a1d3'}}>
+          <Text style={styles.text2}>{status == null ? '' : status.nama}</Text>
+        </View>
+      );
+    } else if (status != null && status.nama == 'Ditanggapi') {
+      return (
+        <View style={{...styles.statusBox, backgroundColor: '#ffc754'}}>
+          <Text style={styles.text2}>{status == null ? '' : status.nama}</Text>
+        </View>
+      );
+    } else if (status != null && status.nama == 'Direalisasikan') {
+      return (
+        <View style={{...styles.statusBox, backgroundColor: '#e8eae6'}}>
+          <Text style={styles.text2}>{status == null ? '' : status.nama}</Text>
+        </View>
+      );
+    } else if (status != null && status.nama == 'Tidak Relevan') {
+      return (
+        <View style={{...styles.statusBox, backgroundColor: '#ec4646'}}>
+          <Text style={styles.text2}>{status == null ? '' : status.nama}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={{...styles.statusBox, backgroundColor: 'white'}}>
           <Text style={styles.text2}>{status == null ? '' : status.nama}</Text>
         </View>
       );
@@ -97,6 +121,61 @@ class Lapor extends React.Component {
             />
           }>
           {this.state.data.map((value, key) => {
+            let isiFil = value.isi;
+            let newIsi = [];
+            for (let x = 0; x <= 101; x++) {
+              if (x <= 100) {
+                newIsi.push(isiFil[x]);
+              } else {
+                newIsi.push(' ...');
+              }
+            }
+
+            let dateFil = value.created_at;
+            let newTahun = [];
+            let newBulan = [];
+            let newTanggal = [];
+            let newTime = [];
+            for (let x = 0; x <= 3; x++) {
+              newTahun.push(dateFil[x]);
+            }
+            for (let x = 5; x <= 6; x++) {
+              newBulan.push(dateFil[x]);
+            }
+            for (let x = 8; x <= 9; x++) {
+              newTanggal.push(dateFil[x]);
+            }
+            for (let x = 11; x <= 15; x++) {
+              newTime.push(dateFil[x]);
+            }
+            let bulanFilter = '';
+            for (let x = 1; x <= 12; x++) {
+              if ('0' == newBulan[0] && '1' == newBulan[1]) {
+                bulanFilter = 'Januari';
+              } else if ('0' == newBulan[0] && '2' == newBulan[1]) {
+                bulanFilter = 'Februari';
+              } else if ('0' == newBulan[0] && '3' == newBulan[1]) {
+                bulanFilter = 'Maret';
+              } else if ('0' == newBulan[0] && '4' == newBulan[1]) {
+                bulanFilter = 'April';
+              } else if ('0' == newBulan[0] && '5' == newBulan[1]) {
+                bulanFilter = 'Mei';
+              } else if ('0' == newBulan[0] && '6' == newBulan[1]) {
+                bulanFilter = 'Juni';
+              } else if ('0' == newBulan[0] && '7' == newBulan[1]) {
+                bulanFilter = 'Juli';
+              } else if ('0' == newBulan[0] && '8' == newBulan[1]) {
+                bulanFilter = 'Agustus';
+              } else if ('0' == newBulan[0] && '9' == newBulan[1]) {
+                bulanFilter = 'September';
+              } else if ('1' == newBulan[0] && '0' == newBulan[1]) {
+                bulanFilter = 'Oktober';
+              } else if ('1' == newBulan[0] && '1' == newBulan[1]) {
+                bulanFilter = 'November';
+              } else if ('1' == newBulan[0] && '2' == newBulan[1]) {
+                bulanFilter = 'Desember';
+              }
+            }
             return (
               <View key={key} style={styles.boxContent}>
                 <View style={styles.childBoxContent}>
@@ -109,9 +188,14 @@ class Lapor extends React.Component {
                   </View>
                   <View style={styles.boxTitle}>
                     <Text style={styles.textTitle}>{value.judul}</Text>
+                    <Text style={{color: 'purple', fontSize: 12}}>
+                      {newTanggal} {bulanFilter} {newTahun} WITA
+                    </Text>
                   </View>
                   <View style={styles.boxDesc}>
-                    <Text style={styles.textDesc}>{value.isi}</Text>
+                    <Text style={styles.textDesc}>
+                      {isiFil.length <= 100 ? isiFil : newIsi}
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -136,6 +220,7 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flex: 1,
+    paddingTop: 10,
   },
   header: {
     height: 50,
@@ -170,7 +255,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   childBoxContent: {
-    height: 300,
+    paddingBottom: 20,
     width: '100%',
     backgroundColor: 'white',
     borderRadius: 5,
@@ -204,10 +289,13 @@ const styles = StyleSheet.create({
   },
   boxTitle: {
     paddingHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   textTitle: {
     fontWeight: 'bold',
     color: '#444444',
+    width: '50%',
   },
   textDesc: {
     fontSize: 12,

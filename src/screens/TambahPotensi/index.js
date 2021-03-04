@@ -12,6 +12,7 @@ import {
   Modal,
   ToastAndroid,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -46,6 +47,11 @@ class TambahPotensi extends React.Component {
     geometry: '',
     centroid: '',
     koordinat: '',
+    latitude: '',
+    longitude: '',
+    usaha: '',
+    alamat: '',
+    loading: false,
     // data: [
     //   {
     //     id: 1,
@@ -77,9 +83,50 @@ class TambahPotensi extends React.Component {
   };
   componentDidMount() {
     this.getDataPotensi();
+    this.getDataKategori();
   }
+  getDataKategori = () => {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({loading: true});
+      const token = value;
+      const url = 'https://api.istudios.id/v1/kategoripotensi/';
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      })
+        .then((res) => res.json())
+        .then((resJson) => {
+          if (resJson.data) {
+            this.setState({dataKategori: resJson.data, loading: false});
+            ToastAndroid.show(
+              'Data berhasil didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            this.setState({loading: false});
+            console.log('error');
+            ToastAndroid.show(
+              'Data gagal didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch((er) => {
+          this.setState({loading: false});
+          ToastAndroid.show(
+            'Data gagal didapatkan',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
+  };
   getDataPotensi = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
       const token = value;
       const url = 'https://api.istudios.id/v1/sigbidang/me/';
       fetch(url, {
@@ -88,8 +135,8 @@ class TambahPotensi extends React.Component {
           Authorization: 'Bearer ' + token,
         },
       })
-        .then(res => res.json())
-        .then(resJson => {
+        .then((res) => res.json())
+        .then((resJson) => {
           // if (resJson.data) {
           //   this.setState({dataKategori: resJson.data});
           //   ToastAndroid.show(
@@ -122,7 +169,7 @@ class TambahPotensi extends React.Component {
             );
           }
         })
-        .catch(er => {
+        .catch((er) => {
           ToastAndroid.show(
             'Data gagal didapatkan',
             ToastAndroid.SHORT,
@@ -132,7 +179,7 @@ class TambahPotensi extends React.Component {
     });
   };
   pickerImage = () => {
-    ImagePicker.showImagePicker(options, response => {
+    ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
 
       if (response.didCancel) {
@@ -186,7 +233,7 @@ class TambahPotensi extends React.Component {
     }
   };
   submit = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
       const {
         fileName,
         kategoriID,
@@ -197,6 +244,9 @@ class TambahPotensi extends React.Component {
         centroid,
         koordinat,
         marker,
+        latitude,
+        longitude,
+        usaha,
       } = this.state;
       const url = 'https://api.istudios.id/v1/potensi/';
       if (
@@ -206,7 +256,9 @@ class TambahPotensi extends React.Component {
         deskripsi != '' &&
         koordinat != '' &&
         geometry != '' &&
-        marker != false
+        marker != false &&
+        kategoriID != '' &&
+        usaha != ''
       ) {
         console.log('ini data kordinat ' + JSON.stringify(koordinat));
         this.setState({modalVisible: true});
@@ -218,14 +270,21 @@ class TambahPotensi extends React.Component {
 
         const formData = new FormData();
 
-        formData.append('kategori', 1);
+        let makeKoordinat = {
+          lat: latitude,
+          lng: longitude,
+        };
+
+        formData.append('kategori', kategoriID);
         formData.append('bidang', '');
         formData.append('judul', judul);
         formData.append('isi', deskripsi);
         formData.append('gambar', image);
         formData.append('geometry', JSON.stringify(geometry));
         formData.append('centroid', '111');
-        formData.append('koordinat', JSON.stringify(koordinat));
+        formData.append('koordinat', JSON.stringify(makeKoordinat));
+        formData.append('no_telp', kontak);
+        formData.append('nama_usaha', usaha);
 
         console.log(formData);
         if (this.state.fileSize >= 1500000) {
@@ -245,8 +304,8 @@ class TambahPotensi extends React.Component {
             },
             body: formData,
           })
-            .then(response => response.json())
-            .then(json => {
+            .then((response) => response.json())
+            .then((json) => {
               console.log(json);
               // this.setState({modalVisible: false});
               if (json.data) {
@@ -266,7 +325,7 @@ class TambahPotensi extends React.Component {
                 );
               }
             })
-            .catch(error => {
+            .catch((error) => {
               this.setState({modalVisible: false});
               console.log(error);
               ToastAndroid.show(
@@ -294,7 +353,12 @@ class TambahPotensi extends React.Component {
           transparent={true}
           onRequestClose={() => this.setState({visible: false})}>
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
             <View
               style={{
                 height: '40%',
@@ -356,7 +420,12 @@ class TambahPotensi extends React.Component {
             );
           }}>
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
             <View
               style={{
                 height: 100,
@@ -381,29 +450,38 @@ class TambahPotensi extends React.Component {
           />
           <Text style={styles.textHeader}>Edit Potensi</Text>
         </View>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              colors={['#19D2BA']}
+              onRefresh={() => {
+                this.getDataPotensi();
+              }}
+            />
+          }>
           <View style={styles.cameraContainer}>{this.imageBox()}</View>
           <View style={styles.boxContent}>
-            <Text style={styles.text1}>Judul</Text>
+            <Text style={styles.text1}>Nama Usaha</Text>
             <TextInput
               style={styles.childBox}
-              placeholder="Masukan Judul"
-              value={this.state.judul}
-              onChangeText={teks => this.setState({judul: teks})}
+              placeholder="Masukan Usaha"
+              value={this.state.usaha}
+              onChangeText={(teks) => this.setState({usaha: teks})}
             />
           </View>
           <View style={styles.boxContent}>
-            <Text style={styles.text1}>Deskripsi</Text>
-            <TextInput
-              value={this.state.deskripsi}
-              onChangeText={teks => this.setState({deskripsi: teks})}
-              style={{
-                ...styles.childBox,
-                height: 150,
-              }}
-              placeholder="Masukan Deskripsi"
-              textAlignVertical="top"
-            />
+            <Text style={styles.text1}>Pilih Kategori</Text>
+            <View style={styles.childBox}>
+              <Text style={{color: '#444444'}}>{this.state.kategori}</Text>
+              <Icon
+                name="chevron-down"
+                size={25}
+                onPress={() => this.setState({visible: true})}
+                color="grey"
+              />
+            </View>
           </View>
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Nomor Kontak</Text>
@@ -412,9 +490,41 @@ class TambahPotensi extends React.Component {
               placeholder="Masukan Nomor Kontak"
               keyboardType="number-pad"
               value={this.state.kontak}
-              onChangeText={teks => this.setState({kontak: teks})}
+              onChangeText={(teks) => this.setState({kontak: teks})}
             />
           </View>
+          {/* <View style={styles.boxContent}>
+            <Text style={styles.text1}>Alamat</Text>
+            <TextInput
+              style={styles.childBox}
+              placeholder="Masukan Alamat"
+              value={this.state.alamat}
+              onChangeText={(teks) => this.setState({alamat: teks})}
+            />
+          </View> */}
+          <View style={styles.boxContent}>
+            <Text style={styles.text1}>Judul Promosi</Text>
+            <TextInput
+              style={styles.childBox}
+              placeholder="Masukan Judul"
+              value={this.state.judul}
+              onChangeText={(teks) => this.setState({judul: teks})}
+            />
+          </View>
+          <View style={styles.boxContent}>
+            <Text style={styles.text1}>Deskripsi</Text>
+            <TextInput
+              value={this.state.deskripsi}
+              onChangeText={(teks) => this.setState({deskripsi: teks})}
+              style={{
+                ...styles.childBox,
+                height: 150,
+              }}
+              placeholder="Masukan Deskripsi"
+              textAlignVertical="top"
+            />
+          </View>
+
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Lokasi Potensi</Text>
             {this.state.data.map((value, key) => {
@@ -432,6 +542,8 @@ class TambahPotensi extends React.Component {
                           koordinat: value.geometry.coordinates,
                           geometry: value.geometry,
                           marker: !this.state.marker,
+                          latitude: value.latitude,
+                          longitude: value.longitude,
                         });
                       }}>
                       <View style={styles.boxContent2}>
@@ -462,6 +574,8 @@ class TambahPotensi extends React.Component {
                           koordinat: value.geometry.coordinates,
                           geometry: value.geometry,
                           marker: !this.state.marker,
+                          latitude: value.latitude,
+                          longitude: value.longitude,
                         });
                       }}>
                       <View style={styles.boxContent2}>
@@ -489,6 +603,8 @@ class TambahPotensi extends React.Component {
                           koordinat: value.geometry.coordinates,
                           geometry: value.geometry,
                           marker: !this.state.marker,
+                          latitude: value.latitude,
+                          longitude: value.longitude,
                         });
                       }}>
                       <View style={styles.boxContent2}>

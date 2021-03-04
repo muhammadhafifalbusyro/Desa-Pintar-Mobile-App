@@ -9,6 +9,9 @@ import {
   TouchableNativeFeedback,
   ToastAndroid,
   RefreshControl,
+  Modal,
+  TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -22,14 +25,102 @@ class Akun extends React.Component {
     jenisKelamin: '',
     pendidikanTerakhir: '',
     potensi: '',
+    no_hp: '',
     loading: false,
+    modalVisible: false,
+    ubahPassword: '',
+    confirmPassword: '',
+    active: false,
   };
   componentDidMount() {
     this.getData();
   }
-
+  submit = () => {
+    AsyncStorage.getItem('access').then((value) => {
+      const {ubahPassword, confirmPassword} = this.state;
+      const url = 'https://api.istudios.id/v1/users/change_password/';
+      if (
+        ubahPassword != '' &&
+        confirmPassword != '' &&
+        ubahPassword == confirmPassword
+      ) {
+        this.setState({active: true});
+        const formData = new FormData();
+        formData.append('password', ubahPassword);
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${value}`,
+          },
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((json) => {
+            console.log(json);
+            // this.setState({modalVisible: false});
+            if (json.data) {
+              this.setState({
+                modalVisible: false,
+                active: false,
+                ubahPassword: '',
+                confirmPassword: '',
+              });
+              ToastAndroid.show(
+                'Password Berhasil Diubah',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
+            } else {
+              this.setState({
+                modalVisible: false,
+                active: false,
+                ubahPassword: '',
+                confirmPassword: '',
+              });
+              ToastAndroid.show(
+                'Password Gagal Diubah',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
+            }
+          })
+          .catch((error) => {
+            this.setState({
+              modalVisible: false,
+              active: false,
+              ubahPassword: '',
+              confirmPassword: '',
+            });
+            console.log(error);
+            ToastAndroid.show(
+              'Kesalahan Jaringan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          });
+      } else if (
+        ubahPassword != '' &&
+        confirmPassword != '' &&
+        ubahPassword != confirmPassword
+      ) {
+        ToastAndroid.show(
+          'Password Tidak Sama',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      } else {
+        ToastAndroid.show(
+          'Data tidak boleh kosong',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      }
+    });
+  };
   getData = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
       this.setState({loading: true});
       console.log('ini token profil ' + value);
       const url = 'https://api.istudios.id/v1/users/me';
@@ -39,8 +130,8 @@ class Akun extends React.Component {
           Authorization: `Bearer ${value}`,
         },
       })
-        .then(res => res.json())
-        .then(reJson => {
+        .then((res) => res.json())
+        .then((reJson) => {
           console.log(reJson);
           if (reJson.profile) {
             this.setState({
@@ -48,10 +139,11 @@ class Akun extends React.Component {
               nik: reJson.profile.nik,
               tempatLahir: reJson.profile.tempat_lahir,
               tanggalLahir: reJson.profile.tanggal_lahir,
-              jenisKelamin: reJson.profile.jk,
+              jenisKelamin: reJson.profile.kelamin,
               pendidikanTerakhir: reJson.profile.pendidikan,
               potensi: reJson.profile.potensi,
               alamat: reJson.profile.alamat,
+              no_hp: reJson.profile.no_hp,
               loading: false,
             });
             ToastAndroid.show(
@@ -68,7 +160,7 @@ class Akun extends React.Component {
             );
           }
         })
-        .catch(er => {
+        .catch((er) => {
           console.log(er);
           this.setState({loading: false});
           ToastAndroid.show(
@@ -82,6 +174,86 @@ class Akun extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() =>
+            this.setState({
+              modalVisible: false,
+              ubahPassword: '',
+              confirmPassword: '',
+            })
+          }>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                width: '90%',
+                backgroundColor: 'white',
+                borderRadius: 5,
+                paddingVertical: 30,
+                paddingHorizontal: 20,
+                alignItems: 'center',
+              }}>
+              <TextInput
+                secureTextEntry={true}
+                style={{
+                  width: '100%',
+                  borderWidth: 1,
+                  borderColor: 'grey',
+                  borderRadius: 5,
+                  marginBottom: 10,
+                }}
+                placeholder="Buat Kata Sandi Baru"
+                value={this.state.ubahPassword}
+                onChangeText={(teks) => this.setState({ubahPassword: teks})}
+              />
+              <TextInput
+                secureTextEntry={true}
+                style={{
+                  width: '100%',
+                  borderWidth: 1,
+                  borderColor: 'grey',
+                  borderRadius: 5,
+                }}
+                placeholder="Konfirmasi Kata Sandi"
+                value={this.state.confirmPassword}
+                onChangeText={(teks) => this.setState({confirmPassword: teks})}
+              />
+              <TouchableNativeFeedback onPress={() => this.submit()}>
+                <View
+                  style={{
+                    marginTop: 10,
+                    height: 50,
+                    width: '100%',
+                    backgroundColor: '#FA7F72',
+                    borderRadius: 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  {this.state.active == true ? (
+                    <ActivityIndicator size="small" color="white" />
+                  ) : (
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        color: 'white',
+                      }}>
+                      Ubah
+                    </Text>
+                  )}
+                </View>
+              </TouchableNativeFeedback>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Text style={styles.textHeader}>Akun</Text>
         </View>
@@ -118,6 +290,10 @@ class Akun extends React.Component {
             </Text>
           </View>
           <View style={styles.boxProfile2}>
+            <Text style={styles.textProfile}>Nomor Kontak</Text>
+            <Text style={styles.textprofile2}>{this.state.no_hp}</Text>
+          </View>
+          <View style={styles.boxProfile2}>
             <Text style={styles.textProfile}>Alamat</Text>
             <Text style={styles.textprofile2}>{this.state.alamat}</Text>
           </View>
@@ -134,6 +310,14 @@ class Akun extends React.Component {
           <View style={styles.boxProfile2}>
             <Text style={styles.textProfile}>Potensi</Text>
             <Text style={styles.textprofile2}>{this.state.potensi}</Text>
+          </View>
+          <View style={styles.boxPassword}>
+            <TouchableNativeFeedback
+              onPress={() => this.setState({modalVisible: true})}>
+              <View style={{...styles.buttonLogout, backgroundColor: 'orange'}}>
+                <Text style={styles.textButtonLogout}>Ubah Password</Text>
+              </View>
+            </TouchableNativeFeedback>
           </View>
           <View style={styles.boxLogout}>
             <TouchableNativeFeedback
@@ -189,7 +373,7 @@ const styles = StyleSheet.create({
     color: '#444444',
   },
   buttonEditProfile: {
-    padding: 3,
+    padding: 5,
     backgroundColor: '#FA7F72',
     marginLeft: 10,
     marginTop: 5,
@@ -212,8 +396,14 @@ const styles = StyleSheet.create({
     color: '#444444',
     fontWeight: 'bold',
   },
-  boxLogout: {
+  boxPassword: {
     padding: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  boxLogout: {
+    paddingHorizontal: 15,
+    paddingBottom: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },

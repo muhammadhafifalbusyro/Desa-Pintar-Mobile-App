@@ -24,10 +24,11 @@ class EditPotensi extends React.Component {
   componentDidMount() {
     this.getDataLapor();
   }
+
   getDataLapor = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
       this.setState({loading: true});
-      const url = 'https://api.istudios.id/v1/potensi/';
+      const url = 'https://api.istudios.id/v1/potensi/?include[]=kategori';
       const token = value;
       fetch(url, {
         method: 'GET',
@@ -35,8 +36,8 @@ class EditPotensi extends React.Component {
           Authorization: 'Bearer ' + token,
         },
       })
-        .then(res => res.json())
-        .then(resJson => {
+        .then((res) => res.json())
+        .then((resJson) => {
           console.log(resJson.data);
           if (resJson.data) {
             this.setState({data: resJson.data, loading: false});
@@ -54,7 +55,7 @@ class EditPotensi extends React.Component {
             );
           }
         })
-        .catch(er => {
+        .catch((er) => {
           this.setState({loading: false});
           console.log(er);
           ToastAndroid.show(
@@ -93,19 +94,21 @@ class EditPotensi extends React.Component {
                   <Image source={{uri: value.gambar}} style={styles.image} />
                   <View style={styles.content1}>
                     <Text style={styles.text1}>
-                      #{value.kategori == null ? '' : value.kategori.nama}
+                      {/* #{value.kategori == null ? '' : value.kategori.nama} */}
+                      #
                     </Text>
                     <View
                       style={{
                         ...styles.statusBox,
                         backgroundColor: '#FFDA77',
                         borderColor: '#FFDA77',
+                        paddingHorizontal: 10,
                       }}>
                       <Text
                         style={{
                           ...styles.text2,
                         }}>
-                        Potensi Masyarakat
+                        {value.kategori == null ? '' : value.kategori.nama}
                       </Text>
                     </View>
                   </View>
@@ -138,6 +141,7 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flex: 1,
+    paddingTop: 10,
   },
   header: {
     height: 50,
@@ -174,7 +178,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   childBoxContent: {
-    height: 300,
+    paddingBottom: 15,
     width: '100%',
     backgroundColor: 'white',
     borderRadius: 5,

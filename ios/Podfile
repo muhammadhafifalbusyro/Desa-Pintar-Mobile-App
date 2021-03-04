@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'DesaPintarMobileApp' do
-  # Pods for DesaPintarMobileApp
+target 'DP' do
+  # Pods for DP
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -38,7 +38,7 @@ target 'DesaPintarMobileApp' do
 
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
-  target 'DesaPintarMobileAppTests' do
+  target 'DPTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -46,10 +46,10 @@ target 'DesaPintarMobileApp' do
   use_native_modules!
 end
 
-target 'DesaPintarMobileApp-tvOS' do
-  # Pods for DesaPintarMobileApp-tvOS
+target 'DP-tvOS' do
+  # Pods for DP-tvOS
 
-  target 'DesaPintarMobileApp-tvOSTests' do
+  target 'DP-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end
