@@ -189,7 +189,7 @@ class Lapor extends React.Component {
                   <View style={styles.boxTitle}>
                     <Text style={styles.textTitle}>{value.judul}</Text>
                     <Text style={{color: 'purple', fontSize: 12}}>
-                      {newTanggal} {bulanFilter} {newTahun} WITA
+                      {newTanggal} {bulanFilter} {newTahun}, {newTime} WITA
                     </Text>
                   </View>
                   <View style={styles.boxDesc}>

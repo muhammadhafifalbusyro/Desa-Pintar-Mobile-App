@@ -14,10 +14,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Login extends React.Component {
   state = {
-    // username: '7501065706620001',
-    // password: '19620617',
-    username: '',
-    password: '',
+    username: '7171030805700002',
+    password: 'cie',
+    // username: '',
+    // password: '',
     loading: false,
   };
   login = () => {
@@ -87,9 +87,15 @@ class Login extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}>
           <View style={styles.boxLogo}>
-            <Image source={require('../../assets/images/desapintar.png')} />
+            <Image
+              source={require('../../assets/images/desapintar.png')}
+              style={{height: 90, width: 150}}
+              resizeMode="contain"
+            />
           </View>
           <View style={styles.boxInput}>
             <View style={styles.childBoxInput}>
@@ -132,6 +138,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    justifyContent: 'center',
   },
   scroll: {
     flex: 1,

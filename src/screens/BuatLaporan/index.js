@@ -166,10 +166,10 @@ class BuatLaporan extends React.Component {
         formData.append('gambar', image);
 
         console.log(formData);
-        if (this.state.fileSize >= 1500000) {
+        if (this.state.fileSize >= 5000000) {
           this.setState({modalVisible: false});
           ToastAndroid.show(
-            'Foto terlalu besar, maksimal 1,5 MB',
+            'Foto terlalu besar, maksimal 5 MB',
             ToastAndroid.SHORT,
             ToastAndroid.CENTER,
           );

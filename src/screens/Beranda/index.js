@@ -33,9 +33,74 @@ class Beranda extends React.Component {
     this.getDataBerita();
     this.getDataInformasi();
     this.getDataPotensi();
+    this.getBidang();
   }
+  getBidang = () => {
+    console.log('mulllaaaiiiii');
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({loading: true});
+      const token = value;
+      const url = 'https://api.istudios.id/v1/sigbidang/me/';
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      })
+        .then((res) => res.json())
+        .then((resJson) => {
+          // if (resJson.data) {
+          //   this.setState({dataKategori: resJson.data});
+          //   ToastAndroid.show(
+          //     'Data berhasil didapatkan',
+          //     ToastAndroid.SHORT,
+          //     ToastAndroid.CENTER,
+          //   );
+          // } else {
+          //   console.log('error');
+          //   ToastAndroid.show(
+          //     'Data gagal didapatkan',
+          //     ToastAndroid.SHORT,
+          //     ToastAndroid.CENTER,
+          //   );
+          // }
+          if (resJson.kepemilikan) {
+            console.log(resJson.kepemilikan);
+            AsyncStorage.setItem(
+              'latitude',
+              JSON.stringify(resJson.kepemilikan[0].latitude),
+            );
+            AsyncStorage.setItem(
+              'longitude',
+              JSON.stringify(resJson.kepemilikan[0].longitude),
+            );
+            ToastAndroid.show(
+              'Data berhasil didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            this.setState({loading: false});
+            console.log('error');
+            ToastAndroid.show(
+              'Data gagal didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch((er) => {
+          this.setState({loading: false});
+          ToastAndroid.show(
+            'Data gagal didapatkan',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
+  };
   getDataBerita = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
       this.setState({loading: true});
       const url = 'https://api.istudios.id/v1/artikel/';
       const token = value;
@@ -45,8 +110,8 @@ class Beranda extends React.Component {
           Authorization: 'Bearer ' + token,
         },
       })
-        .then(res => res.json())
-        .then(resJson => {
+        .then((res) => res.json())
+        .then((resJson) => {
           console.log(resJson);
           if (resJson.data) {
             this.setState({data: resJson.data, loading: false});
@@ -66,7 +131,7 @@ class Beranda extends React.Component {
             );
           }
         })
-        .catch(er => {
+        .catch((er) => {
           this.setState({loading: false});
           console.log(er);
           ToastAndroid.show(
@@ -78,7 +143,7 @@ class Beranda extends React.Component {
     });
   };
   getDataInformasi = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
       this.setState({loading: true});
       const url = 'https://api.istudios.id/v1/informasi/';
       const token = value;
@@ -88,8 +153,8 @@ class Beranda extends React.Component {
           Authorization: 'Bearer ' + token,
         },
       })
-        .then(res => res.json())
-        .then(resJson => {
+        .then((res) => res.json())
+        .then((resJson) => {
           console.log(resJson);
           if (resJson.data) {
             this.setState({dataInformasi: resJson.data, loading: false});
@@ -109,7 +174,7 @@ class Beranda extends React.Component {
             );
           }
         })
-        .catch(er => {
+        .catch((er) => {
           this.setState({loading: false});
           console.log(er);
           ToastAndroid.show(
@@ -121,7 +186,7 @@ class Beranda extends React.Component {
     });
   };
   getDataPotensi = () => {
-    AsyncStorage.getItem('access').then(value => {
+    AsyncStorage.getItem('access').then((value) => {
       this.setState({loading: true});
       const url = 'https://api.istudios.id/v1/potensi/';
       const token = value;
@@ -131,8 +196,8 @@ class Beranda extends React.Component {
           Authorization: 'Bearer ' + token,
         },
       })
-        .then(res => res.json())
-        .then(resJson => {
+        .then((res) => res.json())
+        .then((resJson) => {
           console.log(resJson);
           if (resJson.data) {
             this.setState({dataPotensi: resJson.data, loading: false});
@@ -152,7 +217,7 @@ class Beranda extends React.Component {
             );
           }
         })
-        .catch(er => {
+        .catch((er) => {
           this.setState({loading: false});
           console.log(er);
           ToastAndroid.show(
@@ -211,7 +276,7 @@ class Beranda extends React.Component {
                 placeholder="Cari Potensi"
                 style={{width: '95%'}}
                 value={this.state.search}
-                onChangeText={teks => this.setState({search: teks})}
+                onChangeText={(teks) => this.setState({search: teks})}
               />
               <Icon name="search" size={20} color="grey" />
             </View>
@@ -241,7 +306,7 @@ class Beranda extends React.Component {
         );
       });
     } else {
-      let newDataPotensi = this.state.dataPotensi.filter(elemen => {
+      let newDataPotensi = this.state.dataPotensi.filter((elemen) => {
         let nameLowerCase = elemen.judul.toLowerCase();
         let searchLowerCase = this.state.search.toLowerCase();
         return nameLowerCase.includes(searchLowerCase);

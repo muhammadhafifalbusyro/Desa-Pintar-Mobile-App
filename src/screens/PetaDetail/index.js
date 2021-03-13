@@ -51,17 +51,10 @@ class PetaDetail extends React.Component {
   submitData = () => {
     AsyncStorage.getItem('access').then((value) => {
       const {kategoriID, metodeDefault, harga, narasi} = this.state;
-      const url = 'https://api.istudios.id/v1/potensi/';
-      ToastAndroid.show('Belum Bisa', ToastAndroid.SHORT, ToastAndroid.CENTER);
-      return false;
+      const url = 'https://api.istudios.id/v1/potensi/promosi/';
 
       console.log(this.state);
-      if (
-        kategoriID != '' &&
-        metodeDefault != '' &&
-        harga != '' &&
-        narasi != ''
-      ) {
+      if (metodeDefault != '' && harga != '' && narasi != '') {
         this.setState({modalVisible: true});
         const formData = new FormData();
 
@@ -70,12 +63,10 @@ class PetaDetail extends React.Component {
           lng: this.props.route.params.longitude,
         };
 
-        formData.append('kategori', kategoriID);
+        formData.append('bidang', this.props.route.params.bidang);
         formData.append('jenis_promosi', metodeDefault);
         formData.append('nama_usaha', narasi);
         formData.append('harga', harga);
-        formData.append('gambar', this.props.route.params.gambar);
-        formData.append('koordinat', JSON.stringify(makeKoordinat));
 
         console.log(formData);
 
@@ -93,17 +84,70 @@ class PetaDetail extends React.Component {
             console.log(json);
             // this.setState({modalVisible: false});
             if (json.data) {
-              this.setState({modalVisible: false});
+              this.setState({modalVisible: false, harga: '', narasi: ''});
               ToastAndroid.show(
-                'Laporan berhasil ditambahkan',
+                'Promosi Berhasil Ditambahkan',
                 ToastAndroid.SHORT,
                 ToastAndroid.CENTER,
               );
-              this.props.navigation.goBack();
             } else {
               this.setState({modalVisible: false});
               ToastAndroid.show(
-                'Laporan gagal ditambahkan',
+                'Potensi Gagal Ditambahkan',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
+            }
+          })
+          .catch((error) => {
+            this.setState({modalVisible: false});
+            console.log(error);
+            ToastAndroid.show(
+              'Jaringan error',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          });
+      } else if (metodeDefault == 'Kerja Sama' && narasi != '') {
+        this.setState({modalVisible: true});
+        const formData = new FormData();
+
+        let makeKoordinat = {
+          lat: this.props.route.params.latitude,
+          lng: this.props.route.params.longitude,
+        };
+
+        formData.append('bidang', this.props.route.params.bidang);
+        formData.append('jenis_promosi', metodeDefault);
+        formData.append('nama_usaha', narasi);
+        formData.append('harga', harga);
+
+        console.log(formData);
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${value}`,
+          },
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((json) => {
+            console.log(json);
+            // this.setState({modalVisible: false});
+            if (json.data) {
+              this.setState({modalVisible: false, harga: '', narasi: ''});
+              ToastAndroid.show(
+                'Promosi Berhasil Ditambahkan',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
+            } else {
+              this.setState({modalVisible: false});
+              ToastAndroid.show(
+                'Potensi Gagal Ditambahkan',
                 ToastAndroid.SHORT,
                 ToastAndroid.CENTER,
               );
@@ -178,6 +222,7 @@ class PetaDetail extends React.Component {
               placeholder="Masukan Harga"
               on
               keyboardType="number-pad"
+              value={this.state.harga}
               onChangeText={(teks) => this.setState({harga: teks})}
             />
           </View>
@@ -190,6 +235,7 @@ class PetaDetail extends React.Component {
               }}
               placeholder="Masukan Narasi"
               textAlignVertical="top"
+              value={this.state.narasi}
               onChangeText={(teks) => this.setState({narasi: teks})}
             />
           </View>
@@ -220,6 +266,7 @@ class PetaDetail extends React.Component {
               style={styles.childBox}
               placeholder="Masukan Harga"
               keyboardType="number-pad"
+              value={this.state.harga}
               onChangeText={(teks) => this.setState({harga: teks})}
             />
           </View>
@@ -232,6 +279,7 @@ class PetaDetail extends React.Component {
               }}
               placeholder="Masukan Narasi"
               textAlignVertical="top"
+              value={this.state.narasi}
               onChangeText={(teks) => this.setState({narasi: teks})}
             />
           </View>
@@ -265,6 +313,7 @@ class PetaDetail extends React.Component {
               }}
               placeholder="Masukan Narasi"
               textAlignVertical="top"
+              value={this.state.narasi}
               onChangeText={(teks) => this.setState({narasi: teks})}
             />
           </View>
@@ -304,7 +353,7 @@ class PetaDetail extends React.Component {
               />
             </View>
           </View>
-          <View style={styles.boxContent}>
+          {/* <View style={styles.boxContent}>
             <Text style={styles.text1}>Pilih Kategori</Text>
             <View style={styles.childBox}>
               <Text style={{color: '#444444'}}>{this.state.kategori}</Text>
@@ -315,7 +364,7 @@ class PetaDetail extends React.Component {
                 color="grey"
               />
             </View>
-          </View>
+          </View> */}
           {this.methodeView()}
         </View>
       );

@@ -287,10 +287,10 @@ class TambahPotensi extends React.Component {
         formData.append('nama_usaha', usaha);
 
         console.log(formData);
-        if (this.state.fileSize >= 1500000) {
+        if (this.state.fileSize >= 5000000) {
           this.setState({modalVisible: false});
           ToastAndroid.show(
-            'Foto terlalu besar, maksimal 1,5 MB',
+            'Foto terlalu besar, maksimal 5 MB',
             ToastAndroid.SHORT,
             ToastAndroid.CENTER,
           );
@@ -549,8 +549,9 @@ class TambahPotensi extends React.Component {
                       <View style={styles.boxContent2}>
                         <Image
                           source={{
-                            uri:
-                              'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image.jpg',
+                            // uri:
+                            //   'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image.jpg',
+                            uri: value.gambar_atas,
                           }}
                           style={styles.images2}
                         />
@@ -581,8 +582,9 @@ class TambahPotensi extends React.Component {
                       <View style={styles.boxContent2}>
                         <Image
                           source={{
-                            uri:
-                              'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image.jpg',
+                            // uri:
+                            //   'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image.jpg',
+                            uri: value.gambar_atas,
                           }}
                           style={styles.images2}
                         />
@@ -610,8 +612,9 @@ class TambahPotensi extends React.Component {
                       <View style={styles.boxContent2}>
                         <Image
                           source={{
-                            uri:
-                              'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image.jpg',
+                            // uri:
+                            //   'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image.jpg',
+                            uri: value.gambar_atas,
                           }}
                           style={styles.images2}
                         />

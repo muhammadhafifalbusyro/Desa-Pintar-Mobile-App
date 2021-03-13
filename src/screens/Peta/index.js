@@ -15,6 +15,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MapView from 'react-native-maps';
 import Icon from 'react-native-vector-icons/Feather';
 
+var _mapView = MapView;
+
 class Peta extends React.Component {
   state = {
     // data: [
@@ -53,10 +55,25 @@ class Peta extends React.Component {
         longitude: 122.86777,
       },
     ],
+    latitude: 0.0,
+    longitude: 0.0,
   };
   componentDidMount() {
+    this.getLatitude();
+    this.getLongitude();
     this.getBidang();
   }
+  getLatitude = () => {
+    AsyncStorage.getItem('latitude').then((value) => {
+      console.log(value);
+      this.setState({latitude: JSON.parse(value)});
+    });
+  };
+  getLongitude = () => {
+    AsyncStorage.getItem('longitude').then((value) => {
+      this.setState({longitude: JSON.parse(value)});
+    });
+  };
   getBidang = () => {
     AsyncStorage.getItem('access').then((value) => {
       this.setState({loading: true});
@@ -87,7 +104,12 @@ class Peta extends React.Component {
           // }
           if (resJson.kepemilikan) {
             console.log(resJson.kepemilikan);
-            this.setState({data: resJson.kepemilikan, loading: false});
+            this.setState({
+              data: resJson.kepemilikan,
+              loading: false,
+              // latitude: resJson.kepemilikan.latitude,
+              // longitude: resJson.kepemilikan.longitude,
+            });
             ToastAndroid.show(
               'Data berhasil didapatkan',
               ToastAndroid.SHORT,
@@ -113,7 +135,23 @@ class Peta extends React.Component {
         });
     });
   };
+  toFocused = () => {
+    console.log('mulai');
+    const LATITUDE = this.state.latitude;
+    const LONGITUDE = this.state.longitude;
+    _mapView.animateToRegion(
+      {
+        latitude: LATITUDE,
+        longitude: LONGITUDE,
+        latitudeDelta: 0.009,
+        longitudeDelta: 0.009,
+      },
+      1000,
+    );
+    console.log('selesai');
+  };
   render() {
+    console.log(this.state.latitude);
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -142,13 +180,16 @@ class Peta extends React.Component {
               }}
             /> */}
             <MapView
+              ref={(mapView) => {
+                _mapView = mapView;
+              }}
               style={{
                 height: 150,
                 width: '100%',
               }}
               initialRegion={{
-                latitude: 0.7818,
-                longitude: 122.8608,
+                latitude: this.state.latitude,
+                longitude: this.state.longitude,
                 latitudeDelta: 0.009,
                 longitudeDelta: 0.009,
               }}>
@@ -205,6 +246,12 @@ class Peta extends React.Component {
             );
           })}
         </ScrollView>
+        <TouchableOpacity
+          style={styles.addButton}
+          activeOpacity={0.7}
+          onPress={() => this.toFocused()}>
+          <Icon name="crosshair" size={30} color="white" />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -217,6 +264,19 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flex: 1,
+  },
+  addButton: {
+    height: 60,
+    width: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#19D2BA',
+    borderRadius: 60,
+    borderWidth: 2,
+    borderColor: 'white',
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
   },
   header: {
     height: 50,

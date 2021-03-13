@@ -22,15 +22,17 @@ const CORRR = [
 ];
 
 const regionWil = {
-  latitude: 0.7818,
-  longitude: 122.8608,
+  latitude: 0.781962414844489,
+  longitude: 122.86067468122086,
   latitudeDelta: 0.0009,
   longitudeDelta: 0.0009,
 };
-
+var _mapView = MapView;
 class PetaPreview extends React.Component {
   state = {
     kordinat: [],
+    latWil: '',
+    longWil: '',
   };
   componentDidMount() {
     this.cordinateFilter();
@@ -43,7 +45,24 @@ class PetaPreview extends React.Component {
       newData.push({longitude: data[i][0], latitude: data[i][1]});
     }
     console.log(newData);
-    this.setState({kordinat: newData});
+    this.setState({
+      kordinat: newData,
+      latWil: newData[0].latitude,
+      longWil: newData[0].longitude,
+    });
+  };
+  toFocused = () => {
+    console.log('mulai');
+    _mapView.animateToRegion(
+      {
+        latitude: this.state.latWil,
+        longitude: this.state.longWil,
+        latitudeDelta: 0.0009,
+        longitudeDelta: 0.0009,
+      },
+      1000,
+    );
+    console.log('selesai');
   };
   render() {
     return (
@@ -83,8 +102,17 @@ class PetaPreview extends React.Component {
             }}
           /> */}
           <MapView
+            ref={(mapView) => {
+              _mapView = mapView;
+            }}
             style={{height: '100%', width: '100%'}}
-            region={regionWil}
+            // region={regionWil}
+            region={{
+              latitude: this.state.latWil,
+              longitude: this.state.longWil,
+              latitudeDelta: 0.0009,
+              longitudeDelta: 0.0009,
+            }}
             showsUserLocation={true}>
             <Polygon
               coordinates={this.state.kordinat}
@@ -94,6 +122,12 @@ class PetaPreview extends React.Component {
             />
           </MapView>
         </View>
+        <TouchableOpacity
+          style={styles.addButton}
+          activeOpacity={0.7}
+          onPress={() => this.toFocused()}>
+          <Icon name="crosshair" size={30} color="white" />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -107,6 +141,19 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flex: 1,
+  },
+  addButton: {
+    height: 60,
+    width: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#19D2BA',
+    borderRadius: 60,
+    borderWidth: 2,
+    borderColor: 'white',
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
   },
   header: {
     height: 50,

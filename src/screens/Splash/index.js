@@ -29,7 +29,11 @@ class Splash extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image source={require('../../assets/images/desapintar.png')} />
+        <Image
+          source={require('../../assets/images/desapintar.png')}
+          style={{height: 100, width: 200}}
+          resizeMode="contain"
+        />
         <ActivityIndicator
           size="large"
           color="#19D2BA"
