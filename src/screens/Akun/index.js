@@ -12,6 +12,7 @@ import {
   Modal,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -171,6 +172,26 @@ class Akun extends React.Component {
         });
     });
   };
+  createTwoButtonAlert = () => {
+    Alert.alert('Ubah Password', 'Apa anda yakin untuk mengubahnya ?', [
+      {
+        text: 'Batalkan',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'Ubah', onPress: () => this.submit()},
+    ]);
+  };
+  createTwoButtonAlertLogout = () => {
+    Alert.alert('Logout', 'Apa anda yakin keluar akun ?', [
+      {
+        text: 'Batalkan',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'Keluar', onPress: () => this.props.navigation.replace('Login')},
+    ]);
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -226,7 +247,8 @@ class Akun extends React.Component {
                 value={this.state.confirmPassword}
                 onChangeText={(teks) => this.setState({confirmPassword: teks})}
               />
-              <TouchableNativeFeedback onPress={() => this.submit()}>
+              <TouchableNativeFeedback
+                onPress={() => this.createTwoButtonAlert()}>
                 <View
                   style={{
                     marginTop: 10,
@@ -321,7 +343,7 @@ class Akun extends React.Component {
           </View>
           <View style={styles.boxLogout}>
             <TouchableNativeFeedback
-              onPress={() => this.props.navigation.replace('Login')}>
+              onPress={() => this.createTwoButtonAlertLogout()}>
               <View style={styles.buttonLogout}>
                 <Text style={styles.textButtonLogout}>LOGOUT</Text>
               </View>
