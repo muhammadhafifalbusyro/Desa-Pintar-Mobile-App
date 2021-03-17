@@ -14,15 +14,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Login extends React.Component {
   state = {
-    // username: '7171030805700002',
-    // password: '12345',
-    username: '',
-    password: '',
+    username: '7501065706620001',
+    password: '12345',
+    // username: '',
+    // password: '',
     loading: false,
   };
   login = () => {
     this.setState({loading: true});
     const {username, password} = this.state;
+
     if (username != '' && password != '') {
       const url = 'https://api.istudios.id/v1/token/';
       const formData = new FormData();
@@ -70,6 +71,7 @@ class Login extends React.Component {
           this.setState({loading: false});
         });
     } else {
+      this.setState({loading: false});
       ToastAndroid.show(
         'Data tidak boleh kosong',
         ToastAndroid.SHORT,

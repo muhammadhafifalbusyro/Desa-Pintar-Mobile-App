@@ -8,29 +8,42 @@ import {
   TouchableOpacity,
   TouchableNativeFeedback,
   TextInput,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+
+const widthDim = Dimensions.get('window').width;
 
 class Layanan extends React.Component {
   state = {
     layananList: [
       {
         id: 1,
-        nama: 'Kependudukan',
+        nama: 'Administrasi',
         bg: '#FFDA77',
         nav: 'DetailLayanan',
+        img: require('../../assets/images/folderIcon.png'),
       },
       {
         id: 2,
         nama: 'Perizinan',
         bg: '#FFA45B',
         nav: null,
+        img: require('../../assets/images/cardIcon.png'),
       },
       {
-        id: 13,
+        id: 3,
         nama: 'Pendidikan',
         bg: '#AEE6E6',
         nav: null,
+        img: require('../../assets/images/hatIcon.png'),
+      },
+      {
+        id: 4,
+        nama: 'CCTV',
+        bg: '#AEE6E6',
+        nav: 'CCTV',
+        img: require('../../assets/images/cctvIcon.png'),
       },
     ],
     search: '',
@@ -41,29 +54,29 @@ class Layanan extends React.Component {
       return this.state.layananList.map((value, key) => {
         if (value.nav != null) {
           return (
-            <View style={styles.boxContainer} key={key}>
+            <View style={styles.boxRenderList} key={key}>
               <TouchableNativeFeedback
                 onPress={() => this.props.navigation.navigate(value.nav)}>
-                <View style={{...styles.boxContent, backgroundColor: value.bg}}>
-                  <Text style={styles.text1}>{value.nama}</Text>
-                  <Icon name="chevron-right" size={40} color="grey" />
+                <View style={styles.boxIconContainer}>
+                  <Image source={value.img} />
                 </View>
               </TouchableNativeFeedback>
+              <Text style={styles.imageBox}>{value.nama}</Text>
             </View>
           );
         } else {
           return (
-            <View style={styles.boxContainer} key={key}>
-              <View style={{...styles.boxContent, backgroundColor: value.bg}}>
-                <Text style={styles.text1}>{value.nama}</Text>
-                <Icon name="chevron-right" size={40} color="grey" />
+            <View style={styles.boxRenderList} key={key}>
+              <View style={styles.boxIconContainer}>
+                <Image source={value.img} />
               </View>
+              <Text style={styles.imageBox}>{value.nama}</Text>
             </View>
           );
         }
       });
     } else {
-      let newData = this.state.layananList.filter(elemen => {
+      let newData = this.state.layananList.filter((elemen) => {
         let nameLowerCase = elemen.nama.toLowerCase();
         let searchLowerCase = this.state.search.toLowerCase();
         return nameLowerCase.includes(searchLowerCase);
@@ -72,23 +85,23 @@ class Layanan extends React.Component {
       return newData.map((value, key) => {
         if (value.nav != null) {
           return (
-            <View style={styles.boxContainer} key={key}>
+            <View style={styles.boxRenderList} key={key}>
               <TouchableNativeFeedback
                 onPress={() => this.props.navigation.navigate(value.nav)}>
-                <View style={{...styles.boxContent, backgroundColor: value.bg}}>
-                  <Text style={styles.text1}>{value.nama}</Text>
-                  <Icon name="chevron-right" size={40} color="grey" />
+                <View style={styles.boxIconContainer}>
+                  <Image source={value.img} />
                 </View>
               </TouchableNativeFeedback>
+              <Text style={styles.imageBox}>{value.nama}</Text>
             </View>
           );
         } else {
           return (
-            <View style={styles.boxContainer} key={key}>
-              <View style={{...styles.boxContent, backgroundColor: value.bg}}>
-                <Text style={styles.text1}>{value.nama}</Text>
-                <Icon name="chevron-right" size={40} color="grey" />
+            <View style={styles.boxRenderList} key={key}>
+              <View style={styles.boxIconContainer}>
+                <Image source={value.img} />
               </View>
+              <Text style={styles.imageBox}>{value.nama}</Text>
             </View>
           );
         }
@@ -110,7 +123,7 @@ class Layanan extends React.Component {
               <TextInput
                 placeholder="Cari Layanan"
                 style={{width: '85%'}}
-                onChangeText={teks => {
+                onChangeText={(teks) => {
                   this.setState({search: teks});
                 }}
                 placeholderTextColor="#444444"
@@ -144,7 +157,9 @@ class Layanan extends React.Component {
               );
             }
           })} */}
-          {this.renderListApp()}
+          <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
+            {this.renderListApp()}
+          </View>
         </ScrollView>
       </View>
     );
@@ -223,5 +238,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     fontWeight: 'bold',
+  },
+  boxRenderList: {
+    height: widthDim / 2,
+    width: widthDim / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  boxIconContainer: {
+    height: widthDim / 2.5,
+    width: widthDim / 2.5,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    borderWidth: 5,
+    borderColor: 'gray',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageBox: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#444444',
+    marginTop: 5,
   },
 });

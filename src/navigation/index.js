@@ -20,6 +20,7 @@ import DetailBeranda from '../screens/DetailBeranda';
 import EditProfile from '../screens/EditProfile';
 import EditPotensi from '../screens/EditPotensi';
 import TambahPotensi from '../screens/TambahPotensi';
+import CCTV from '../screens/CCTV';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -34,6 +35,7 @@ function layananStack() {
       <Stack.Screen name="Layanan" component={Layanan} />
       <Stack.Screen name="DetailLayanan" component={DetailLayanan} />
       <Stack.Screen name="TambahLayanan" component={TambahLayanan} />
+      <Stack.Screen name="CCTV" component={CCTV} />
     </Stack.Navigator>
   );
 }
@@ -105,7 +107,7 @@ function MainScreens() {
             iconName = focused ? 'grid' : 'grid';
             sizeIcon = size;
           } else if (route.name === 'Peta') {
-            iconName = focused ? 'map' : 'map';
+            iconName = focused ? 'map-pin' : 'map-pin';
             sizeIcon = size;
           } else if (route.name === 'Lapor') {
             iconName = focused ? 'alert-circle' : 'alert-circle';

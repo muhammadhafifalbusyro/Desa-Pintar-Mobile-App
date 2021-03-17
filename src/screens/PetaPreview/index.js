@@ -126,7 +126,7 @@ class PetaPreview extends React.Component {
           style={styles.addButton}
           activeOpacity={0.7}
           onPress={() => this.toFocused()}>
-          <Icon name="crosshair" size={30} color="white" />
+          <Icon name="refresh-cw" size={30} color="white" />
         </TouchableOpacity>
       </View>
     );
