@@ -579,35 +579,35 @@ class PetaDetail extends React.Component {
           </View>
           <Text
             style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
-            Luas :{' '}
+            Luas:{' '}
             {this.props.route.params.luas == null
               ? ''
               : this.props.route.params.luas}
           </Text>
           <Text
             style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
-            Status Hak :{' '}
+            Status Hak:{' '}
             {this.props.route.params.status_hak == null
               ? ''
               : this.props.route.params.status_hak}
           </Text>
           <Text
             style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
-            Penggunaan Tanah :{' '}
+            Penggunaan Tanah:{' '}
             {this.props.route.params.penggunaan_tanah == null
               ? ''
               : this.props.route.params.penggunaan_tanah}
           </Text>
           <Text
             style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
-            Pemanfaatan Tanah :{' '}
+            Pemanfaatan Tanah:{' '}
             {this.props.route.params.pemanfaatan_tanah == null
               ? ''
               : this.props.route.params.pemanfaatan_tanah}
           </Text>
           <Text
             style={{marginHorizontal: 10, marginBottom: 10, color: '#444444'}}>
-            RT/RW :{' '}
+            RT/RW:{' '}
             {this.props.route.params.rtrw == null
               ? ''
               : this.props.route.params.rtrw}
@@ -688,7 +688,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: 'grey',
+    borderColor: '#d1d1d1',
     flexDirection: 'row',
     padding: 10,
     alignItems: 'center',

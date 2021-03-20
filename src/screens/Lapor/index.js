@@ -121,7 +121,7 @@ class Lapor extends React.Component {
             />
           }>
           {this.state.data.map((value, key) => {
-            let isiFil = value.isi;
+            let isiFil = value.isi == null ? '' : value.isi;
             let newIsi = [];
             for (let x = 0; x <= 101; x++) {
               if (x <= 100) {

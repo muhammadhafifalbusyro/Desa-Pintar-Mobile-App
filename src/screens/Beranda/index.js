@@ -274,11 +274,12 @@ class Beranda extends React.Component {
             <View style={styles.boxContentSearch}>
               <TextInput
                 placeholder="Cari Potensi"
-                style={{width: '95%'}}
+                style={{width: '100%'}}
                 value={this.state.search}
                 onChangeText={(teks) => this.setState({search: teks})}
+                // placeholderTextColor="#d1d1d1"
               />
-              <Icon name="search" size={20} color="grey" />
+              <Icon name="search" size={20} color="#d1d1d1" />
             </View>
           </View>
           {this.filterPotensi()}
@@ -299,7 +300,7 @@ class Beranda extends React.Component {
             }>
             <View style={{...styles.boxContent, marginBottom: 10}}>
               <Image source={{uri: value.gambar}} style={styles.images} />
-              <Text style={styles.text1}>{value.judul}</Text>
+              <Text style={styles.text1}>{value.nama_usaha}</Text>
               <Icon name="chevron-right" size={40} color="grey" />
             </View>
           </TouchableNativeFeedback>
@@ -307,7 +308,8 @@ class Beranda extends React.Component {
       });
     } else {
       let newDataPotensi = this.state.dataPotensi.filter((elemen) => {
-        let nameLowerCase = elemen.judul.toLowerCase();
+        let nameLowerCase =
+          elemen.nama_usaha == null ? '' : elemen.nama_usaha.toLowerCase();
         let searchLowerCase = this.state.search.toLowerCase();
         return nameLowerCase.includes(searchLowerCase);
       });
@@ -322,7 +324,7 @@ class Beranda extends React.Component {
             }>
             <View style={{...styles.boxContent, marginBottom: 10}}>
               <Image source={{uri: value.gambar}} style={styles.images} />
-              <Text style={styles.text1}>{value.judul}</Text>
+              <Text style={styles.text1}>{value.nama_usaha}</Text>
               <Icon name="chevron-right" size={40} color="grey" />
             </View>
           </TouchableNativeFeedback>
@@ -476,7 +478,7 @@ const styles = StyleSheet.create({
     height: 45,
     width: '100%',
     borderWidth: 1,
-    borderColor: 'grey',
+    borderColor: '#d1d1d1',
     flexDirection: 'row',
     borderRadius: 10,
     justifyContent: 'space-between',

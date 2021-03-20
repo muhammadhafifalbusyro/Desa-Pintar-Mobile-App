@@ -227,7 +227,7 @@ class Akun extends React.Component {
                 style={{
                   width: '100%',
                   borderWidth: 1,
-                  borderColor: 'grey',
+                  borderColor: '#d1d1d1',
                   borderRadius: 5,
                   marginBottom: 10,
                 }}
@@ -240,7 +240,7 @@ class Akun extends React.Component {
                 style={{
                   width: '100%',
                   borderWidth: 1,
-                  borderColor: 'grey',
+                  borderColor: '#d1d1d1',
                   borderRadius: 5,
                 }}
                 placeholder="Konfirmasi Kata Sandi"

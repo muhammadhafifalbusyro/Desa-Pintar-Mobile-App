@@ -131,8 +131,8 @@ android {
         applicationId "com.dpmobile.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "5.0"
+        versionCode 7
+        versionName "7.0"
     }
     splits {
         abi {

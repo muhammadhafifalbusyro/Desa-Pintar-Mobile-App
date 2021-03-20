@@ -277,7 +277,7 @@ class TambahPotensi extends React.Component {
 
         formData.append('kategori', kategoriID);
         formData.append('bidang', '');
-        formData.append('judul', judul);
+        formData.append('judul', usaha);
         formData.append('isi', deskripsi);
         formData.append('gambar', image);
         formData.append('geometry', JSON.stringify(geometry));
@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: 'grey',
+    borderColor: '#d1d1d1',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: 'grey',
+    borderColor: '#d1d1d1',
     flexDirection: 'row',
     padding: 10,
     alignItems: 'center',

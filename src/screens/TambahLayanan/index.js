@@ -239,7 +239,7 @@ class TambahLayanan extends React.Component {
             </View>
           </View>
           <Text style={{padding: 10, color: '#444444'}}>
-            Silahkan lengkapi isian di bawah ini
+            Silakan lengkapi isian di bawah ini
           </Text>
           <View style={styles.boxInput}>
             <View style={styles.childBoxInput}>
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: 'grey',
+    borderColor: '#d1d1d1',
     backgroundColor: 'white',
   },
   boxButton: {

@@ -116,7 +116,7 @@ class Layanan extends React.Component {
         </View>
         <ScrollView style={styles.scroll}>
           <Text style={styles.teks}>
-            Silahkan cari layanan yang anda butuhkan :
+            Silakan cari layanan yang anda butuhkan:
           </Text>
           <View style={styles.contentContainer}>
             <View style={styles.boxContentSearch}>
@@ -126,9 +126,9 @@ class Layanan extends React.Component {
                 onChangeText={(teks) => {
                   this.setState({search: teks});
                 }}
-                placeholderTextColor="#444444"
+                // placeholderTextColor="#d1d1d1"
               />
-              <Icon name="search" size={20} color="grey" />
+              <Icon name="search" size={20} color="#d1d1d1" />
             </View>
           </View>
           {/* {this.state.layananList.map((value, key) => {
@@ -190,7 +190,8 @@ const styles = StyleSheet.create({
   },
   teks: {
     marginTop: 5,
-    padding: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     fontWeight: 'bold',
     color: '#444444',
   },
@@ -201,9 +202,9 @@ const styles = StyleSheet.create({
   },
   boxContentSearch: {
     height: 45,
-    width: '100%',
+    width: '95%',
     borderWidth: 1,
-    borderColor: 'grey',
+    borderColor: '#d1d1d1',
     flexDirection: 'row',
     borderRadius: 10,
     justifyContent: 'space-between',

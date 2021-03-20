@@ -14,10 +14,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Login extends React.Component {
   state = {
-    username: '7501065706620001',
-    password: '12345',
-    // username: '',
-    // password: '',
+    // username: '7501065706620001',
+    // password: '12345',
+    username: '',
+    password: '',
     loading: false,
   };
   login = () => {
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: 'grey',
+    borderColor: '#d1d1d1',
     backgroundColor: 'rgba(0,0,0,0.1)',
   },
   boxButton: {

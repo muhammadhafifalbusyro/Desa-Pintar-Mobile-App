@@ -107,7 +107,7 @@ function MainScreens() {
             iconName = focused ? 'grid' : 'grid';
             sizeIcon = size;
           } else if (route.name === 'Peta') {
-            iconName = focused ? 'map-pin' : 'map-pin';
+            iconName = focused ? 'map' : 'map';
             sizeIcon = size;
           } else if (route.name === 'Lapor') {
             iconName = focused ? 'alert-circle' : 'alert-circle';

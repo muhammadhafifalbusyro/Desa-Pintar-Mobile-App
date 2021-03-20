@@ -164,6 +164,7 @@ class BuatLaporan extends React.Component {
         formData.append('judul', judul);
         formData.append('isi', deskripsi);
         formData.append('gambar', image);
+        formData.append('status', 1);
 
         console.log(formData);
         if (this.state.fileSize >= 5000000) {
@@ -430,7 +431,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: 'grey',
+    borderColor: '#d1d1d1',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -448,7 +449,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: 'grey',
+    borderColor: '#d1d1d1',
     flexDirection: 'row',
     padding: 10,
     alignItems: 'center',

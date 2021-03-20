@@ -88,6 +88,15 @@ class EditPotensi extends React.Component {
             />
           }>
           {this.state.data.map((value, key) => {
+            let isiFil = value.isi == null ? '' : value.isi;
+            let newIsi = [];
+            for (let x = 0; x <= 101; x++) {
+              if (x <= 100) {
+                newIsi.push(isiFil[x]);
+              } else {
+                newIsi.push(' ...');
+              }
+            }
             return (
               <View key={key} style={styles.boxContent}>
                 <View style={styles.childBoxContent}>
@@ -113,10 +122,12 @@ class EditPotensi extends React.Component {
                     </View>
                   </View>
                   <View style={styles.boxTitle}>
-                    <Text style={styles.textTitle}>{value.judul}</Text>
+                    <Text style={styles.textTitle}>{value.nama_usaha}</Text>
                   </View>
                   <View style={styles.boxDesc}>
-                    <Text style={styles.textDesc}>{value.isi}</Text>
+                    <Text style={styles.textDesc}>
+                      {isiFil.length <= 100 ? isiFil : newIsi}
+                    </Text>
                   </View>
                 </View>
               </View>
