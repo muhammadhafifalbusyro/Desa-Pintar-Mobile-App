@@ -188,7 +188,7 @@ class Beranda extends React.Component {
   getDataPotensi = () => {
     AsyncStorage.getItem('access').then((value) => {
       this.setState({loading: true});
-      const url = 'https://api.istudios.id/v1/potensi/';
+      const url = 'https://api.istudios.id/v1/potensi/?include[]=kategori';
       const token = value;
       fetch(url, {
         method: 'GET',
@@ -290,20 +290,104 @@ class Beranda extends React.Component {
   filterPotensi = () => {
     if (this.state.search == '') {
       return this.state.dataPotensi.map((value, key) => {
+        let isiFil = value.isi == null ? '' : value.isi;
+        let newIsi = [];
+        for (let x = 0; x <= 101; x++) {
+          if (x <= 100) {
+            newIsi.push(isiFil[x]);
+          } else {
+            newIsi.push(' ...');
+          }
+        }
         return (
-          <TouchableNativeFeedback
+          // <TouchableNativeFeedback
+          //   key={key}
+          //   onPress={() =>
+          //     this.props.navigation.navigate('DetailBeranda', {
+          //       item: value,
+          //     })
+          //   }>
+          //   <View style={{...styles.boxContent, marginBottom: 10}}>
+          //     <Image source={{uri: value.gambar}} style={styles.images} />
+          //     <Text style={styles.text1}>{value.nama_usaha}</Text>
+          //     <Icon name="chevron-right" size={40} color="grey" />
+          //   </View>
+          // </TouchableNativeFeedback>
+          <View
             key={key}
-            onPress={() =>
-              this.props.navigation.navigate('DetailBeranda', {
-                item: value,
-              })
-            }>
-            <View style={{...styles.boxContent, marginBottom: 10}}>
-              <Image source={{uri: value.gambar}} style={styles.images} />
-              <Text style={styles.text1}>{value.nama_usaha}</Text>
-              <Icon name="chevron-right" size={40} color="grey" />
+            style={{
+              paddingBottom: 15,
+              width: '100%',
+              backgroundColor: 'white',
+              borderRadius: 5,
+              elevation: 3,
+              marginBottom: 10,
+            }}>
+            <Image
+              source={{uri: value.gambar}}
+              style={{
+                height: 200,
+                width: '100%',
+                borderTopRightRadius: 5,
+                borderTopLeftRadius: 5,
+              }}
+            />
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                paddingHorizontal: 10,
+                paddingVertical: 8,
+                justifyContent: 'space-between',
+              }}>
+              <Text
+                style={{
+                  color: 'green',
+                }}>
+                {/* #{value.kategori == null ? '' : value.kategori.nama} */}#
+              </Text>
+              <View
+                style={{
+                  padding: 4,
+                  borderRadius: 3,
+                  backgroundColor: '#FFDA77',
+                  borderColor: '#FFDA77',
+                  paddingHorizontal: 10,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: 'white',
+                  }}>
+                  {value.kategori == null ? '' : value.kategori.nama}
+                </Text>
+              </View>
             </View>
-          </TouchableNativeFeedback>
+            <View
+              style={{
+                paddingHorizontal: 10,
+              }}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: '#444444',
+                }}>
+                {value.nama_usaha}
+              </Text>
+            </View>
+            <View
+              style={{
+                paddingHorizontal: 10,
+              }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: '#444444',
+                }}>
+                {isiFil.length <= 100 ? isiFil : newIsi}
+              </Text>
+            </View>
+          </View>
         );
       });
     } else {
@@ -314,20 +398,91 @@ class Beranda extends React.Component {
         return nameLowerCase.includes(searchLowerCase);
       });
       return newDataPotensi.map((value, key) => {
+        let isiFil = value.isi == null ? '' : value.isi;
+        let newIsi = [];
+        for (let x = 0; x <= 101; x++) {
+          if (x <= 100) {
+            newIsi.push(isiFil[x]);
+          } else {
+            newIsi.push(' ...');
+          }
+        }
         return (
-          <TouchableNativeFeedback
+          <View
             key={key}
-            onPress={() =>
-              this.props.navigation.navigate('DetailBeranda', {
-                item: value,
-              })
-            }>
-            <View style={{...styles.boxContent, marginBottom: 10}}>
-              <Image source={{uri: value.gambar}} style={styles.images} />
-              <Text style={styles.text1}>{value.nama_usaha}</Text>
-              <Icon name="chevron-right" size={40} color="grey" />
+            style={{
+              paddingBottom: 15,
+              width: '100%',
+              backgroundColor: 'white',
+              borderRadius: 5,
+              elevation: 3,
+              marginBottom: 10,
+            }}>
+            <Image
+              source={{uri: value.gambar}}
+              style={{
+                height: 200,
+                width: '100%',
+                borderTopRightRadius: 5,
+                borderTopLeftRadius: 5,
+              }}
+            />
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                paddingHorizontal: 10,
+                paddingVertical: 8,
+                justifyContent: 'space-between',
+              }}>
+              <Text
+                style={{
+                  color: 'green',
+                }}>
+                {/* #{value.kategori == null ? '' : value.kategori.nama} */}#
+              </Text>
+              <View
+                style={{
+                  padding: 4,
+                  borderRadius: 3,
+                  backgroundColor: '#FFDA77',
+                  borderColor: '#FFDA77',
+                  paddingHorizontal: 10,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: 'white',
+                  }}>
+                  {value.kategori == null ? '' : value.kategori.nama}
+                </Text>
+              </View>
             </View>
-          </TouchableNativeFeedback>
+            <View
+              style={{
+                paddingHorizontal: 10,
+              }}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: '#444444',
+                }}>
+                {value.nama_usaha}
+              </Text>
+            </View>
+            <View
+              style={{
+                paddingHorizontal: 10,
+              }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: '#444444',
+                }}>
+                {isiFil.length <= 100 ? isiFil : newIsi}
+              </Text>
+            </View>
+          </View>
         );
       });
     }
