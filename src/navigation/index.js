@@ -21,6 +21,13 @@ import EditProfile from '../screens/EditProfile';
 import EditPotensi from '../screens/EditPotensi';
 import TambahPotensi from '../screens/TambahPotensi';
 import CCTV from '../screens/CCTV';
+import TambahPotensi2 from '../screens/TambahPotensi2';
+import PotensiMasyarakat from '../screens/PotensiMasyarakat';
+import PotensiBidang from '../screens/PotensiBidang';
+import PetaPreviewBidang from '../screens/PetaPreviewBidang';
+
+
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -75,6 +82,9 @@ function berandaStack() {
       }}>
       <Stack.Screen name="Beranda" component={Beranda} />
       <Stack.Screen name="DetailBeranda" component={DetailBeranda} />
+      <Stack.Screen name='PotensiMasyarakat' component={PotensiMasyarakat}/>
+      <Stack.Screen name='PotensiBidang' component={PotensiBidang}/>
+      <Stack.Screen name='PetaPreviewBidang' component={PetaPreviewBidang}/>
     </Stack.Navigator>
   );
 }
@@ -89,6 +99,7 @@ function AkunStack() {
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="EditPotensi" component={EditPotensi} />
       <Stack.Screen name="TambahPotensi" component={TambahPotensi} />
+      <Stack.Screen name="TambahPotensi2" component={TambahPotensi2} />
     </Stack.Navigator>
   );
 }

@@ -11,7 +11,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import MapView, {Polygon, Polyline} from 'react-native-maps';
+import MapView, {Polygon, Polyline,Marker} from 'react-native-maps';
 
 const CORRR = [
   {longitude: 122.86067468122086, latitude: 0.781962414844489},
@@ -28,9 +28,8 @@ const regionWil = {
   longitudeDelta: 0.0009,
 };
 var _mapView = MapView;
-class PetaPreview extends React.Component {
+class PetaPreviewBidang extends React.Component {
   state = {
-    kordinat: [],
     latWil: 0.0,
     longWil: 0.0,
   };
@@ -38,17 +37,12 @@ class PetaPreview extends React.Component {
     this.cordinateFilter();
   }
   cordinateFilter = () => {
-    const data = this.props.route.params.geometry.coordinates[0];
-    console.log(data.length);
-    const newData = [];
-    for (let i = 0; i < data.length; i++) {
-      newData.push({longitude: data[i][0], latitude: data[i][1]});
-    }
-    console.log(newData);
+    const data = JSON.parse(this.props.route.params.koordinat)
+    
+    console.log(data);
     this.setState({
-      kordinat: newData,
-      latWil: newData[0].latitude,
-      longWil: newData[0].longitude,
+      latWil: data.lat,
+      longWil: data.lng
     });
   };
   toFocused = () => {
@@ -114,11 +108,13 @@ class PetaPreview extends React.Component {
               longitudeDelta: 0.0009,
             }}
             showsUserLocation={true}>
-            <Polygon
-              coordinates={this.state.kordinat}
-              strokeColor="red"
-              strokeWidth={2}
-              fillColor="rgba(252,3,3,0.5)"
+            <Marker
+              coordinate={{
+                latitude: this.state.latWil,
+                longitude: this.state.longWil,
+              }}
+              title={this.props.route.params.namabidang}
+              description={'asdfasd'}
             />
           </MapView>
         </View>
@@ -132,7 +128,7 @@ class PetaPreview extends React.Component {
     );
   }
 }
-export default PetaPreview;
+export default PetaPreviewBidang;
 
 const styles = StyleSheet.create({
   container: {

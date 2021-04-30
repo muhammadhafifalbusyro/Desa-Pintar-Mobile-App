@@ -188,8 +188,8 @@ class Peta extends React.Component {
                 width: '100%',
               }}
               initialRegion={{
-                latitude: 0.78203012095,
-                longitude: 122.860741697,
+                latitude: this.state.latitude,
+                longitude: this.state.longitude,
                 latitudeDelta: 0.009,
                 longitudeDelta: 0.009,
               }}>

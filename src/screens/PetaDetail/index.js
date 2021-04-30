@@ -44,13 +44,14 @@ class PetaDetail extends React.Component {
     harga: '',
     narasi: '',
     modalVisible: false,
+    isi:''
   };
   componentDidMount() {
     this.getDataKategori();
   }
   submitData = () => {
     AsyncStorage.getItem('access').then((value) => {
-      const {kategoriID, metodeDefault, harga, narasi} = this.state;
+      const {kategoriID, metodeDefault, harga, narasi,isi} = this.state;
       const url = 'https://api.istudios.id/v1/potensi/promosi/';
 
       console.log(this.state);
@@ -66,6 +67,7 @@ class PetaDetail extends React.Component {
         formData.append('bidang', this.props.route.params.bidang);
         formData.append('jenis_promosi', metodeDefault);
         formData.append('nama_usaha', narasi);
+        formData.append('isi',isi)
         formData.append('harga', harga);
 
         console.log(formData);
@@ -227,6 +229,15 @@ class PetaDetail extends React.Component {
             />
           </View>
           <View style={styles.boxContent}>
+            <Text style={styles.text1}>Judul</Text>
+            <TextInput
+              style={styles.childBox}
+              placeholder="Judul"
+              value={this.state.narasi}
+              onChangeText={(teks) => this.setState({narasi: teks})}
+            />
+          </View>
+          <View style={styles.boxContent}>
             <Text style={styles.text1}>Narasi</Text>
             <TextInput
               style={{
@@ -235,8 +246,8 @@ class PetaDetail extends React.Component {
               }}
               placeholder="Masukan Narasi"
               textAlignVertical="top"
-              value={this.state.narasi}
-              onChangeText={(teks) => this.setState({narasi: teks})}
+              value={this.state.isi}
+              onChangeText={(teks) => this.setState({isi: teks})}
             />
           </View>
           <View style={styles.boxContent}>
@@ -271,6 +282,15 @@ class PetaDetail extends React.Component {
             />
           </View>
           <View style={styles.boxContent}>
+            <Text style={styles.text1}>Judul</Text>
+            <TextInput
+              style={styles.childBox}
+              placeholder="Judul"
+              value={this.state.narasi}
+              onChangeText={(teks) => this.setState({narasi: teks})}
+            />
+          </View>
+          <View style={styles.boxContent}>
             <Text style={styles.text1}>Narasi</Text>
             <TextInput
               style={{
@@ -279,8 +299,8 @@ class PetaDetail extends React.Component {
               }}
               placeholder="Masukan Narasi"
               textAlignVertical="top"
-              value={this.state.narasi}
-              onChangeText={(teks) => this.setState({narasi: teks})}
+              value={this.state.isi}
+              onChangeText={(teks) => this.setState({isi: teks})}
             />
           </View>
           <View style={styles.boxContent}>
@@ -305,6 +325,15 @@ class PetaDetail extends React.Component {
       return (
         <View style={{width: '100%'}}>
           <View style={styles.boxContent}>
+            <Text style={styles.text1}>Judul</Text>
+            <TextInput
+              style={styles.childBox}
+              placeholder="Judul"
+              value={this.state.narasi}
+              onChangeText={(teks) => this.setState({narasi: teks})}
+            />
+          </View>
+          <View style={styles.boxContent}>
             <Text style={styles.text1}>Narasi</Text>
             <TextInput
               style={{
@@ -313,8 +342,8 @@ class PetaDetail extends React.Component {
               }}
               placeholder="Masukan Narasi"
               textAlignVertical="top"
-              value={this.state.narasi}
-              onChangeText={(teks) => this.setState({narasi: teks})}
+              value={this.state.isi}
+              onChangeText={(teks) => this.setState({isi: teks})}
             />
           </View>
           <View style={styles.boxContent}>

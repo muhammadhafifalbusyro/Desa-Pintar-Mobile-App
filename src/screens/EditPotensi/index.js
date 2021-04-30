@@ -9,6 +9,8 @@ import {
   TouchableNativeFeedback,
   RefreshControl,
   ToastAndroid,
+  ActivityIndicator,
+  Modal
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,11 +22,55 @@ class EditPotensi extends React.Component {
   state = {
     data: [],
     loading: false,
+    loading2:false,
+    popup:false,
+    idKonten:''
   };
   componentDidMount() {
     this.getDataLapor();
   }
-
+  deleteData=(id)=>{
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({loading2: true});
+      const url = `https://api.istudios.id/v1/potensi/${id}/`;
+      const token = value;
+      fetch(url, {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      })
+        .then((res) => res.json())
+        .then((resJson) => {
+          console.log(resJson.data);
+          if (resJson.data) {
+            this.setState({loading2: false,popup:false});
+            ToastAndroid.show(
+              resJson.data.status,
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.getDataLapor()
+          } else {
+            this.setState({loading2: false});
+            ToastAndroid.show(
+              'Data gagal dihapus',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch((er) => {
+          this.setState({loading: false});
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
+  }
   getDataLapor = () => {
     AsyncStorage.getItem('access').then((value) => {
       this.setState({loading: true});
@@ -66,9 +112,48 @@ class EditPotensi extends React.Component {
         });
     });
   };
+  editPotensi=(id)=>{
+    this.setState({popup:false})
+    this.props.navigation.navigate('TambahPotensi2',{id:id})
+  }
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+        visible={this.state.popup}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => this.setState({popup: false})}
+        >
+          <View style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',}}
+
+          >
+            <View style={{width:'80%',padding:10,backgroundColor:'white',borderRadius:5,alignItems:'center'}}>
+              <View style={{width:'100%',padding:5,alignItems:'flex-end'}}>
+                  <Icon name='x'color='red' size={20} onPress={()=>this.setState({popup:false})}/>
+              </View>
+              <Text style={{color:'#444444'}}>Silakan pilih aksi di bawah ini:</Text>
+              <TouchableOpacity activeOpacity={0.7} delayPressIn={0.1} style={{height:45,width:'80%',backgroundColor:'#FFDA77',borderRadius:5,marginVertical:10,justifyContent:'center',alignItems:'center',}} onPress={()=>this.editPotensi(this.state.idKonten)}>
+                  <Text style={{color:'white'}}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.7} delayPressIn={0.1} style={{height:45,width:'80%',backgroundColor:'#FA7F72',borderRadius:5,marginVertical:10,justifyContent:'center',alignItems:'center',}} onPress={()=>this.deleteData(this.state.idKonten)}>
+                  {
+                    this.state.loading2==true?
+                    (
+                      <ActivityIndicator size='small' color='white'/>
+                    ):
+                    (
+                      <Text style={{color:'white'}}>Hapus</Text>
+                    )
+                  }
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -99,12 +184,12 @@ class EditPotensi extends React.Component {
             }
             return (
               <View key={key} style={styles.boxContent}>
+                <TouchableNativeFeedback onPress={()=>this.setState({popup:true,idKonten:value.id})}>
                 <View style={styles.childBoxContent}>
                   <Image source={{uri: value.gambar}} style={styles.image} />
                   <View style={styles.content1}>
                     <Text style={styles.text1}>
-                      {/* #{value.kategori == null ? '' : value.kategori.nama} */}
-                      #
+                      {value.nama_usaha}
                     </Text>
                     <View
                       style={{
@@ -121,15 +206,13 @@ class EditPotensi extends React.Component {
                       </Text>
                     </View>
                   </View>
-                  <View style={styles.boxTitle}>
-                    <Text style={styles.textTitle}>{value.nama_usaha}</Text>
-                  </View>
                   <View style={styles.boxDesc}>
                     <Text style={styles.textDesc}>
                       {isiFil.length <= 100 ? isiFil : newIsi}
                     </Text>
                   </View>
                 </View>
+                </TouchableNativeFeedback>
               </View>
             );
           })}
@@ -214,7 +297,8 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   text1: {
-    color: 'green',
+    color: '#444444',
+    fontWeight:'bold'
   },
   text2: {
     fontSize: 12,

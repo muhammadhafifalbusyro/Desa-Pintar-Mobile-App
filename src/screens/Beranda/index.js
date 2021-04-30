@@ -287,6 +287,18 @@ class Beranda extends React.Component {
       );
     }
   };
+  navigationPotensi=(id,value)=>{
+    if(id=='2'){
+      this.props.navigation.navigate('PotensiBidang',{
+        item:value
+      })
+    }
+    else if(id=='3'){
+      this.props.navigation.navigate('PotensiMasyarakat',{
+        item:value
+      })
+    }
+  }
   filterPotensi = () => {
     if (this.state.search == '') {
       return this.state.dataPotensi.map((value, key) => {
@@ -313,8 +325,9 @@ class Beranda extends React.Component {
           //     <Icon name="chevron-right" size={40} color="grey" />
           //   </View>
           // </TouchableNativeFeedback>
+          <TouchableNativeFeedback onPress={()=>this.navigationPotensi(value.kategori.id,value)} key={key}>
           <View
-            key={key}
+            
             style={{
               paddingBottom: 15,
               width: '100%',
@@ -342,9 +355,10 @@ class Beranda extends React.Component {
               }}>
               <Text
                 style={{
-                  color: 'green',
+                  color: '#444444',
+                  fontWeight:'bold'
                 }}>
-                {/* #{value.kategori == null ? '' : value.kategori.nama} */}#
+                {value.nama_usaha}
               </Text>
               <View
                 style={{
@@ -363,18 +377,7 @@ class Beranda extends React.Component {
                 </Text>
               </View>
             </View>
-            <View
-              style={{
-                paddingHorizontal: 10,
-              }}>
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  color: '#444444',
-                }}>
-                {value.nama_usaha}
-              </Text>
-            </View>
+            
             <View
               style={{
                 paddingHorizontal: 10,
@@ -388,6 +391,7 @@ class Beranda extends React.Component {
               </Text>
             </View>
           </View>
+          </TouchableNativeFeedback>
         );
       });
     } else {
@@ -408,6 +412,7 @@ class Beranda extends React.Component {
           }
         }
         return (
+          <TouchableNativeFeedback onPress={()=>this.navigationPotensi(value.kategori.id,value)} key={key}>
           <View
             key={key}
             style={{
@@ -483,6 +488,7 @@ class Beranda extends React.Component {
               </Text>
             </View>
           </View>
+          </TouchableNativeFeedback>
         );
       });
     }
