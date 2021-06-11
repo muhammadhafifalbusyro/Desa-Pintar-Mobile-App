@@ -21,7 +21,7 @@ class Layanan extends React.Component {
         id: 1,
         nama: 'Administrasi',
         bg: '#FFDA77',
-        nav: 'DetailLayanan',
+        nav: 'Administrasi',
         img: require('../../assets/images/folderIcon.png'),
       },
       {

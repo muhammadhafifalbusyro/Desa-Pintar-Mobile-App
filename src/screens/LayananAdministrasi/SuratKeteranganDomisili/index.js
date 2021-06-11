@@ -17,7 +17,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class TambahLayanan extends React.Component {
+class SuratKeteranganDomisili extends React.Component {
   state = {
     icon: true,
     promosi: false,
@@ -354,7 +354,7 @@ class TambahLayanan extends React.Component {
     );
   }
 }
-export default TambahLayanan;
+export default SuratKeteranganDomisili;
 
 const styles = StyleSheet.create({
   container: {

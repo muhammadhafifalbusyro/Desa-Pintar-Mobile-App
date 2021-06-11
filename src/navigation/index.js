@@ -14,8 +14,6 @@ import Splash from '../screens/Splash';
 import BuatLaporan from '../screens/BuatLaporan';
 import PetaDetail from '../screens/PetaDetail';
 import PetaPreview from '../screens/PetaPreview';
-import DetailLayanan from '../screens/DetailLayanan';
-import TambahLayanan from '../screens/TambahLayanan';
 import DetailBeranda from '../screens/DetailBeranda';
 import EditProfile from '../screens/EditProfile';
 import EditPotensi from '../screens/EditPotensi';
@@ -25,9 +23,13 @@ import TambahPotensi2 from '../screens/TambahPotensi2';
 import PotensiMasyarakat from '../screens/PotensiMasyarakat';
 import PotensiBidang from '../screens/PotensiBidang';
 import PetaPreviewBidang from '../screens/PetaPreviewBidang';
-
-
-
+import SuratKeteranganDomisili from '../screens/LayananAdministrasi/SuratKeteranganDomisili';
+import Administrasi from '../screens/Administrasi';
+import SuratKeteranganKeluargaMiskin from '../screens/LayananAdministrasi/SuratKeteranganKeluargaMiskin';
+import SuratPembagianWarisan from '../screens/LayananAdministrasi/SuratPembagianWarisan';
+import LaporanPenggunaanBiayaPemakaman from '../screens/LayananAdministrasi/LaporanPenggunaanBiayaPemakaman';
+import KeteranganTidakMemilikiBantuanSosial from '../screens/LayananAdministrasi/KeteranganTidakMemilikiBantuanSosial';
+import SuratKeteranganAhliWarisNonTunggal from '../screens/LayananAdministrasi/SuratKeteranganAhliWarisNonTunggal';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,8 +42,31 @@ function layananStack() {
         animationEnabled: false,
       }}>
       <Stack.Screen name="Layanan" component={Layanan} />
-      <Stack.Screen name="DetailLayanan" component={DetailLayanan} />
-      <Stack.Screen name="TambahLayanan" component={TambahLayanan} />
+      <Stack.Screen name="Administrasi" component={Administrasi} />
+      <Stack.Screen
+        name="SuratKeteranganDomisili"
+        component={SuratKeteranganDomisili}
+      />
+      <Stack.Screen
+        name="SuratKeteranganKeluargaMiskin"
+        component={SuratKeteranganKeluargaMiskin}
+      />
+      <Stack.Screen
+        name="SuratPembagianWarisan"
+        component={SuratPembagianWarisan}
+      />
+      <Stack.Screen
+        name="LaporanPenggunaanBiayaPemakaman"
+        component={LaporanPenggunaanBiayaPemakaman}
+      />
+      <Stack.Screen
+        name="KeteranganTidakMemilikiBantuanSosial"
+        component={KeteranganTidakMemilikiBantuanSosial}
+      />
+      <Stack.Screen
+        name="SuratKeteranganAhliWarisNonTunggal"
+        component={SuratKeteranganAhliWarisNonTunggal}
+      />
       <Stack.Screen name="CCTV" component={CCTV} />
     </Stack.Navigator>
   );
@@ -82,9 +107,9 @@ function berandaStack() {
       }}>
       <Stack.Screen name="Beranda" component={Beranda} />
       <Stack.Screen name="DetailBeranda" component={DetailBeranda} />
-      <Stack.Screen name='PotensiMasyarakat' component={PotensiMasyarakat}/>
-      <Stack.Screen name='PotensiBidang' component={PotensiBidang}/>
-      <Stack.Screen name='PetaPreviewBidang' component={PetaPreviewBidang}/>
+      <Stack.Screen name="PotensiMasyarakat" component={PotensiMasyarakat} />
+      <Stack.Screen name="PotensiBidang" component={PotensiBidang} />
+      <Stack.Screen name="PetaPreviewBidang" component={PetaPreviewBidang} />
     </Stack.Navigator>
   );
 }

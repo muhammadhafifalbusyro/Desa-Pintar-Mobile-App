@@ -12,9 +12,47 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-class DetailLayanan extends React.Component {
+class Administrasi extends React.Component {
   state = {
     promosi: false,
+    detailLayanan: [
+      {
+        id: 1,
+        namaLayanan: 'Surat Keterangan Domisili',
+        nav: 'SuratKeteranganDomisili',
+        background: 'white',
+      },
+      {
+        id: 2,
+        namaLayanan: 'Surat Keterangan Keluarga Miskin',
+        nav: 'SuratKeteranganKeluargaMiskin',
+        background: 'white',
+      },
+      {
+        id: 3,
+        namaLayanan: 'Surat Pembagian Warisan',
+        nav: 'SuratPembagianWarisan',
+        background: 'white',
+      },
+      {
+        id: 4,
+        namaLayanan: 'Laporan Penggunaan Biaya Pemakaman',
+        nav: 'LaporanPenggunaanBiayaPemakaman',
+        background: 'white',
+      },
+      {
+        id: 5,
+        namaLayanan: 'Keterangan Tidak Memiliki Bantuan Sosial',
+        nav: 'KeteranganTidakMemilikiBantuanSosial',
+        background: 'white',
+      },
+      {
+        id: 6,
+        namaLayanan: 'Surat Keterangan Ahli Waris Non Tunggal',
+        nav: 'SuratKeteranganAhliWarisNonTunggal',
+        background: 'white',
+      },
+    ],
   };
 
   render() {
@@ -42,33 +80,29 @@ class DetailLayanan extends React.Component {
             </Text>
           </View>
 
-          <View style={styles.boxContainer}>
-            <TouchableNativeFeedback
-              onPress={() => this.props.navigation.navigate('TambahLayanan')}>
-              <View style={{...styles.boxContent, backgroundColor: '#ffda77'}}>
-                <Text style={styles.text1}>Surat Keterangan Domisili</Text>
-                <Icon name="chevron-right" size={40} color="grey" />
+          {this.state.detailLayanan.map((value, key) => {
+            return (
+              <View style={styles.boxContainer} key={key}>
+                <TouchableNativeFeedback
+                  onPress={() => this.props.navigation.navigate(value.nav)}>
+                  <View
+                    style={{
+                      ...styles.boxContent,
+                      backgroundColor: value.background,
+                    }}>
+                    <Text style={styles.text1}>{value.namaLayanan}</Text>
+                    <Icon name="chevron-right" size={40} color="grey" />
+                  </View>
+                </TouchableNativeFeedback>
               </View>
-            </TouchableNativeFeedback>
-          </View>
-          <View style={styles.boxContainer}>
-            <View style={styles.boxContent}>
-              <Text style={styles.text1}>Surat Pengantar SKCK</Text>
-              <Icon name="chevron-right" size={40} color="grey" />
-            </View>
-          </View>
-          <View style={styles.boxContainer}>
-            <View style={{...styles.boxContent, backgroundColor: '#aee6e6'}}>
-              <Text style={styles.text1}>Surat Keterangan Keahlian</Text>
-              <Icon name="chevron-right" size={40} color="grey" />
-            </View>
-          </View>
+            );
+          })}
         </ScrollView>
       </View>
     );
   }
 }
-export default DetailLayanan;
+export default Administrasi;
 
 const styles = StyleSheet.create({
   container: {
@@ -119,7 +153,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     width: '60%',
     fontSize: 16,
-    color: 'white',
+    color: 'grey',
     fontWeight: 'bold',
   },
   boxTitle: {

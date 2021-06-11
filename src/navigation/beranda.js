@@ -15,8 +15,7 @@ import Splash from '../screens/Splash';
 import BuatLaporan from '../screens/BuatLaporan';
 import PetaDetail from '../screens/PetaDetail';
 import PetaPreview from '../screens/PetaPreview';
-import DetailLayanan from '../screens/DetailLayanan';
-import TambahLayanan from '../screens/TambahLayanan';
+import DetailLayanan from '../screens/Administrasi';
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();

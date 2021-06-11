@@ -65,21 +65,43 @@ class Beranda extends React.Component {
           //   );
           // }
           if (resJson.kepemilikan) {
-            console.log(resJson.kepemilikan);
-            AsyncStorage.setItem(
-              'latitude',
-              JSON.stringify(resJson.kepemilikan[0].latitude),
-            );
-            AsyncStorage.setItem(
-              'longitude',
-              JSON.stringify(resJson.kepemilikan[0].longitude),
-            );
+            console.log(resJson.kepemilikan.length+ 'ini hasilnya');
+            const bidangLength = resJson.kepemilikan.length
+            if (bidangLength!=0){
+              AsyncStorage.setItem(
+                'latitude',
+                JSON.stringify(resJson.kepemilikan[0].latitude),
+              );
+              AsyncStorage.setItem(
+                'longitude',
+                JSON.stringify(resJson.kepemilikan[0].longitude),
+              );
+            }
+            else if (bidangLength==0){
+              AsyncStorage.setItem(
+                'latitude',
+                JSON.stringify(0.0),
+              );
+              AsyncStorage.setItem(
+                'longitude',
+                JSON.stringify(0.0),
+              );
+            }
             ToastAndroid.show(
               'Data berhasil didapatkan',
               ToastAndroid.SHORT,
               ToastAndroid.CENTER,
             );
-          } else {
+          } 
+          else {
+            AsyncStorage.setItem(
+              'latitude',
+              JSON.stringify(0.0),
+            );
+            AsyncStorage.setItem(
+              'longitude',
+              JSON.stringify(0.0),
+            );
             this.setState({loading: false});
             console.log('error');
             ToastAndroid.show(
