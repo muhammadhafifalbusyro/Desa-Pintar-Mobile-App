@@ -13,11 +13,14 @@ import {
   Modal,
   ActivityIndicator,
   RefreshControl,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class SuratKeteranganKeluargaMiskin extends React.Component {
+const heigtDim = Dimensions.get('window').height;
+
+class SuratKeteranganHakMilik extends React.Component {
   render() {
     return (
       <View style={styles.container}>
@@ -39,12 +42,43 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
                 fontWeight: 'bold',
                 color: 'grey',
               }}>
-              Surat Keterangan Keluarga Miskin (Santunan Duka)
+              Surat Keterangan Hak Milik
             </Text>
+          </View>
+
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Luas Tanah Angka
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Luas Tanah Kalimat
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
           </View>
           <View
             style={{paddingHorizontal: 10, paddingBottom: 5, paddingTop: 10}}>
-            <Text style={{color: 'grey', fontWeight: 'bold'}}>Kematian</Text>
+            <Text style={{color: 'grey', fontWeight: 'bold'}}>Dusun</Text>
           </View>
           <View style={{padding: 10, width: '100%'}}>
             <View
@@ -72,6 +106,111 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
                 <Icon name="chevron-down" size={30} color="grey" />
               </View>
             </View>
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Batas Utara
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Batas Selatan
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Batas Barat
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Batas Timur
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Nama Saksi 1
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Nama Saksi 2
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Nama Saksi 3
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
             <TouchableNativeFeedback>
@@ -107,7 +246,7 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
     );
   }
 }
-export default SuratKeteranganKeluargaMiskin;
+export default SuratKeteranganHakMilik;
 
 const styles = StyleSheet.create({
   container: {

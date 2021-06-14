@@ -17,7 +17,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class SuratKeteranganKeluargaMiskin extends React.Component {
+class SuratKeteranganAhliWarisTunggal extends React.Component {
   render() {
     return (
       <View style={styles.container}>
@@ -39,12 +39,14 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
                 fontWeight: 'bold',
                 color: 'grey',
               }}>
-              Surat Keterangan Keluarga Miskin (Santunan Duka)
+              Surat Keterangan Ahli Waris Non Tunggal (Santunan Duka)
             </Text>
           </View>
           <View
             style={{paddingHorizontal: 10, paddingBottom: 5, paddingTop: 10}}>
-            <Text style={{color: 'grey', fontWeight: 'bold'}}>Kematian</Text>
+            <Text style={{color: 'grey', fontWeight: 'bold'}}>
+              Kematian Atas
+            </Text>
           </View>
           <View style={{padding: 10, width: '100%'}}>
             <View
@@ -72,6 +74,36 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
                 <Icon name="chevron-down" size={30} color="grey" />
               </View>
             </View>
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Hubungan Dengan Almarhum
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Reg Dtks
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
             <TouchableNativeFeedback>
@@ -107,7 +139,7 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
     );
   }
 }
-export default SuratKeteranganKeluargaMiskin;
+export default SuratKeteranganAhliWarisTunggal;
 
 const styles = StyleSheet.create({
   container: {

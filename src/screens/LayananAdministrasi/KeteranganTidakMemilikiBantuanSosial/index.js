@@ -39,7 +39,7 @@ class KeteranganTidakMemilikiBantuanSosial extends React.Component {
                 fontWeight: 'bold',
                 color: 'grey',
               }}>
-              Keterangan Tidak memiliki Bantuan Sosial
+              Keterangan Tidak memiliki Bantuan Sosial (Santunan Duka)
             </Text>
           </View>
           <View

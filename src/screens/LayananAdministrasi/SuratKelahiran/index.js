@@ -17,7 +17,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class SuratKeteranganKeluargaMiskin extends React.Component {
+class SuratKelahiran extends React.Component {
   render() {
     return (
       <View style={styles.container}>
@@ -39,12 +39,12 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
                 fontWeight: 'bold',
                 color: 'grey',
               }}>
-              Surat Keterangan Keluarga Miskin (Santunan Duka)
+              Surat Kelahiran
             </Text>
           </View>
           <View
             style={{paddingHorizontal: 10, paddingBottom: 5, paddingTop: 10}}>
-            <Text style={{color: 'grey', fontWeight: 'bold'}}>Kematian</Text>
+            <Text style={{color: 'grey', fontWeight: 'bold'}}>Kelahiran</Text>
           </View>
           <View style={{padding: 10, width: '100%'}}>
             <View
@@ -107,7 +107,7 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
     );
   }
 }
-export default SuratKeteranganKeluargaMiskin;
+export default SuratKelahiran;
 
 const styles = StyleSheet.create({
   container: {

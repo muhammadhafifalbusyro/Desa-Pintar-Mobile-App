@@ -606,7 +606,7 @@ class SuratPembagianWarisan extends React.Component {
                           Keterangan
                         </Text>
                         <TextInput
-                          value={value.umur}
+                          value={value.keterangan}
                           onChangeText={(text) =>
                             this.inputItemsKeteranganPembagianWarisan(
                               text,

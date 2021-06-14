@@ -30,6 +30,33 @@ import SuratPembagianWarisan from '../screens/LayananAdministrasi/SuratPembagian
 import LaporanPenggunaanBiayaPemakaman from '../screens/LayananAdministrasi/LaporanPenggunaanBiayaPemakaman';
 import KeteranganTidakMemilikiBantuanSosial from '../screens/LayananAdministrasi/KeteranganTidakMemilikiBantuanSosial';
 import SuratKeteranganAhliWarisNonTunggal from '../screens/LayananAdministrasi/SuratKeteranganAhliWarisNonTunggal';
+import SuratKeteranganAhliWarisTunggal from '../screens/LayananAdministrasi/SuratKeteranganAhliWarisTunggal';
+import PermohonanPeminjamanBRI from '../screens/LayananAdministrasi/PermohonanPeminjamanBRI';
+import SKTMKeluarga from '../screens/LayananAdministrasi/SKTMKeluarga';
+import SuratPengantarBalikNamaTokenListrik from '../screens/LayananAdministrasi/SuratPengantarBalikNamaTokenListrik';
+import SuratKeteranganPerekaman from '../screens/LayananAdministrasi/SuratKeteranganPerekaman';
+import OrangYangSama from '../screens/LayananAdministrasi/OrangYangSama';
+import SuratKeteranganAhliWaris from '../screens/LayananAdministrasi/SuratKeteranganAhliWaris';
+import SuratKeteranganHakMilik from '../screens/LayananAdministrasi/SuratKeteranganHakMilik';
+import SuratKeteranganAsalUsulKayu from '../screens/LayananAdministrasi/SuratKeteranganAsalUsulKayu';
+import SuratKelahiran from '../screens/LayananAdministrasi/SuratKelahiran';
+import SuratKeteranganPisah from '../screens/LayananAdministrasi/SuratKeteranganPisah';
+import SuratKeteranganDudaJanda from '../screens/LayananAdministrasi/SuratKeteranganDudaJanda';
+import SuratKehilangan from '../screens/LayananAdministrasi/SuratKehilangan';
+import SuratIzinKeramaian from '../screens/LayananAdministrasi/SuratIzinKeramaian';
+import SuratIzinPesta from '../screens/LayananAdministrasi/SuratIzinPesta';
+import SuratKeteranganKematian from '../screens/LayananAdministrasi/SuratKeteranganKematian';
+import SuratKeteranganPelakuPerikanan from '../screens/LayananAdministrasi/SuratKeteranganPelakuPerikanan';
+import SuratKeteranganPenguburan from '../screens/LayananAdministrasi/SuratKeteranganPenguburan';
+import SuratKeteranganCatatanKepolisian from '../screens/LayananAdministrasi/SuratKeteranganCatatanKepolisian';
+import SuratPengantarRapidTes from '../screens/LayananAdministrasi/SuratPengantarRapidTes';
+import SuratKeteranganPenduduk from '../screens/LayananAdministrasi/SuratKeteranganPenduduk';
+import SuratKeteranganTempatTinggal from '../screens/LayananAdministrasi/SuratKeteranganTempatTinggal';
+import SuratKeteranganBukuNikahHilang from '../screens/LayananAdministrasi/SuratKeteranganBukuNikahHilang';
+import SuratKeteranganUsaha from '../screens/LayananAdministrasi/SuratKeteranganUsaha';
+import SuratKeteranganBelumMenikah from '../screens/LayananAdministrasi/SuratKeteranganBelumMenikah';
+import SuratKeteranganSiswaTidakMampu from '../screens/LayananAdministrasi/SuratKeteranganSiswaTidakMampu';
+import SuratKeteranganDiluarDaerah from '../screens/LayananAdministrasi/SuratKeteranganDiLuarDaerah';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -66,6 +93,96 @@ function layananStack() {
       <Stack.Screen
         name="SuratKeteranganAhliWarisNonTunggal"
         component={SuratKeteranganAhliWarisNonTunggal}
+      />
+      <Stack.Screen
+        name="SuratKeteranganAhliWarisTunggal"
+        component={SuratKeteranganAhliWarisTunggal}
+      />
+      <Stack.Screen
+        name="PermohonanPeminjamanBRI"
+        component={PermohonanPeminjamanBRI}
+      />
+      <Stack.Screen
+        name="SuratPengantarBalikNamaTokenListrik"
+        component={SuratPengantarBalikNamaTokenListrik}
+      />
+      <Stack.Screen
+        name="SuratKeteranganPerekaman"
+        component={SuratKeteranganPerekaman}
+      />
+      <Stack.Screen name="SKTMKeluarga" component={SKTMKeluarga} />
+      <Stack.Screen name="OrangYangSama" component={OrangYangSama} />
+      <Stack.Screen
+        name="SuratKeteranganAhliWaris"
+        component={SuratKeteranganAhliWaris}
+      />
+      <Stack.Screen
+        name="SuratKeteranganHakMilik"
+        component={SuratKeteranganHakMilik}
+      />
+      <Stack.Screen
+        name="SuratKeteranganAsalUsulKayu"
+        component={SuratKeteranganAsalUsulKayu}
+      />
+      <Stack.Screen name="SuratKelahiran" component={SuratKelahiran} />
+      <Stack.Screen
+        name="SuratKeteranganPisah"
+        component={SuratKeteranganPisah}
+      />
+      <Stack.Screen
+        name="SuratKeteranganDudaJanda"
+        component={SuratKeteranganDudaJanda}
+      />
+      <Stack.Screen name="SuratKehilangan" component={SuratKehilangan} />
+      <Stack.Screen name="SuratIzinKeramaian" component={SuratIzinKeramaian} />
+      <Stack.Screen name="SuratIzinPesta" component={SuratIzinPesta} />
+      <Stack.Screen
+        name="SuratKeteranganKematian"
+        component={SuratKeteranganKematian}
+      />
+      <Stack.Screen
+        name="SuratKeteranganPelakuPerikanan"
+        component={SuratKeteranganPelakuPerikanan}
+      />
+      <Stack.Screen
+        name="SuratKeteranganPenguburan"
+        component={SuratKeteranganPenguburan}
+      />
+      <Stack.Screen
+        name="SuratKeteranganCatatanKepolisian"
+        component={SuratKeteranganCatatanKepolisian}
+      />
+      <Stack.Screen
+        name="SuratPengantarRapidTes"
+        component={SuratPengantarRapidTes}
+      />
+      <Stack.Screen
+        name="SuratKeteranganPenduduk"
+        component={SuratKeteranganPenduduk}
+      />
+      <Stack.Screen
+        name="SuratKeteranganTempatTinggal"
+        component={SuratKeteranganTempatTinggal}
+      />
+      <Stack.Screen
+        name="SuratKeteranganDiluarDaerah"
+        component={SuratKeteranganDiluarDaerah}
+      />
+      <Stack.Screen
+        name="SuratKeteranganSiswaTidakMampu"
+        component={SuratKeteranganSiswaTidakMampu}
+      />
+      <Stack.Screen
+        name="SuratKeteranganBelumMenikah"
+        component={SuratKeteranganBelumMenikah}
+      />
+      <Stack.Screen
+        name="SuratKeteranganUsaha"
+        component={SuratKeteranganUsaha}
+      />
+      <Stack.Screen
+        name="SuratKeteranganBukuNikahHilang"
+        component={SuratKeteranganBukuNikahHilang}
       />
       <Stack.Screen name="CCTV" component={CCTV} />
     </Stack.Navigator>

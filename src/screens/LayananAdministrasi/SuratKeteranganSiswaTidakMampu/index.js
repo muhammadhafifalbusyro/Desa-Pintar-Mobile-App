@@ -17,7 +17,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class SuratKeteranganKeluargaMiskin extends React.Component {
+class SuratKeteranganTidakMampu extends React.Component {
   render() {
     return (
       <View style={styles.container}>
@@ -39,12 +39,46 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
                 fontWeight: 'bold',
                 color: 'grey',
               }}>
-              Surat Keterangan Keluarga Miskin (Santunan Duka)
+              Surat Keterangan Tidak Mampu
             </Text>
           </View>
           <View
             style={{paddingHorizontal: 10, paddingBottom: 5, paddingTop: 10}}>
-            <Text style={{color: 'grey', fontWeight: 'bold'}}>Kematian</Text>
+            <Text style={{color: 'grey', fontWeight: 'bold'}}>Penduduk</Text>
+          </View>
+          <View style={{padding: 10, width: '100%'}}>
+            <View
+              style={{
+                height: 45,
+                width: '100%',
+                flexDirection: 'row',
+                borderRadius: 5,
+                borderColor: 'grey',
+                borderWidth: 1,
+                alignItems: 'center',
+                paddingHorizontal: 5,
+                justifyContent: 'space-between',
+              }}>
+              <Text style={{color: '#444444'}}>hallo</Text>
+              <View
+                style={{
+                  height: 35,
+                  width: 35,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderLeftWidth: 1,
+                  borderColor: 'grey',
+                }}>
+                <Icon name="chevron-down" size={30} color="grey" />
+              </View>
+            </View>
+          </View>
+
+          <View
+            style={{paddingHorizontal: 10, paddingBottom: 5, paddingTop: 10}}>
+            <Text style={{color: 'grey', fontWeight: 'bold'}}>
+              Nama Orang Tua
+            </Text>
           </View>
           <View style={{padding: 10, width: '100%'}}>
             <View
@@ -107,7 +141,7 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
     );
   }
 }
-export default SuratKeteranganKeluargaMiskin;
+export default SuratKeteranganTidakMampu;
 
 const styles = StyleSheet.create({
   container: {

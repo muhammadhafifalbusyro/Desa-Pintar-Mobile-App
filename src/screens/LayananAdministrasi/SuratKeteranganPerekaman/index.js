@@ -13,11 +13,14 @@ import {
   Modal,
   ActivityIndicator,
   RefreshControl,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class SuratKeteranganKeluargaMiskin extends React.Component {
+const heigtDim = Dimensions.get('window').height;
+
+class SuratKeteranganPerekaman extends React.Component {
   render() {
     return (
       <View style={styles.container}>
@@ -39,40 +42,43 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
                 fontWeight: 'bold',
                 color: 'grey',
               }}>
-              Surat Keterangan Keluarga Miskin (Santunan Duka)
+              Surat Keterangan Perekaman
             </Text>
           </View>
+
           <View
-            style={{paddingHorizontal: 10, paddingBottom: 5, paddingTop: 10}}>
-            <Text style={{color: 'grey', fontWeight: 'bold'}}>Kematian</Text>
-          </View>
-          <View style={{padding: 10, width: '100%'}}>
-            <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Nama Subjek
+            </Text>
+            <TextInput
               style={{
-                height: 45,
                 width: '100%',
-                flexDirection: 'row',
+                height: 45,
+                borderWidth: 1,
                 borderRadius: 5,
                 borderColor: 'grey',
-                borderWidth: 1,
-                alignItems: 'center',
-                paddingHorizontal: 5,
-                justifyContent: 'space-between',
-              }}>
-              <Text style={{color: '#444444'}}>hallo</Text>
-              <View
-                style={{
-                  height: 35,
-                  width: 35,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderLeftWidth: 1,
-                  borderColor: 'grey',
-                }}>
-                <Icon name="chevron-down" size={30} color="grey" />
-              </View>
-            </View>
+              }}
+            />
           </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Keterangan
+            </Text>
+            <TextInput
+              multiline={true}
+              textAlignVertical="top"
+              style={{
+                width: '100%',
+                height: heigtDim / 3,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
             <TouchableNativeFeedback>
               <View
@@ -107,7 +113,7 @@ class SuratKeteranganKeluargaMiskin extends React.Component {
     );
   }
 }
-export default SuratKeteranganKeluargaMiskin;
+export default SuratKeteranganPerekaman;
 
 const styles = StyleSheet.create({
   container: {

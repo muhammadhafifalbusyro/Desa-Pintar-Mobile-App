@@ -17,7 +17,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class SuratKeteranganAhliWarisNonTunggal extends React.Component {
+class PermohonanPeminjamanBRI extends React.Component {
   render() {
     return (
       <View style={styles.container}>
@@ -39,13 +39,148 @@ class SuratKeteranganAhliWarisNonTunggal extends React.Component {
                 fontWeight: 'bold',
                 color: 'grey',
               }}>
-              Surat Keterangan Ahli Waris Non Tunggal (Santunan Duka)
+              Permohonan Peminjaman BRI
             </Text>
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Ibu Kandung
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Bantuan Kalimat
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Bantuan Angka
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Jangka Waktu
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Nama Usaha
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Unit BRI
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Lokasi BRI
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Nama Kuasa
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Umur Kuasa
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
           </View>
           <View
             style={{paddingHorizontal: 10, paddingBottom: 5, paddingTop: 10}}>
             <Text style={{color: 'grey', fontWeight: 'bold'}}>
-              Kematian Atas
+              Pekerjaan Kuasa
             </Text>
           </View>
           <View style={{padding: 10, width: '100%'}}>
@@ -78,7 +213,7 @@ class SuratKeteranganAhliWarisNonTunggal extends React.Component {
           <View
             style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
             <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
-              Hubungan Dengan Almarhum
+              Alamat Kuasa
             </Text>
             <TextInput
               style={{
@@ -93,7 +228,7 @@ class SuratKeteranganAhliWarisNonTunggal extends React.Component {
           <View
             style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
             <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
-              Reg Dtks
+              Objek Jaminan Kuasa
             </Text>
             <TextInput
               style={{
@@ -104,6 +239,39 @@ class SuratKeteranganAhliWarisNonTunggal extends React.Component {
                 borderColor: 'grey',
               }}
             />
+          </View>
+          <View
+            style={{paddingHorizontal: 10, paddingBottom: 5, paddingTop: 10}}>
+            <Text style={{color: 'grey', fontWeight: 'bold'}}>
+              Daftar Lampiran
+            </Text>
+          </View>
+          <View style={{padding: 10, width: '100%'}}>
+            <View
+              style={{
+                height: 45,
+                width: '100%',
+                flexDirection: 'row',
+                borderRadius: 5,
+                borderColor: 'grey',
+                borderWidth: 1,
+                alignItems: 'center',
+                paddingHorizontal: 5,
+                justifyContent: 'space-between',
+              }}>
+              <Text style={{color: '#444444'}}>hallo</Text>
+              <View
+                style={{
+                  height: 35,
+                  width: 35,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderLeftWidth: 1,
+                  borderColor: 'grey',
+                }}>
+                <Icon name="chevron-down" size={30} color="grey" />
+              </View>
+            </View>
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
             <TouchableNativeFeedback>
@@ -139,7 +307,7 @@ class SuratKeteranganAhliWarisNonTunggal extends React.Component {
     );
   }
 }
-export default SuratKeteranganAhliWarisNonTunggal;
+export default PermohonanPeminjamanBRI;
 
 const styles = StyleSheet.create({
   container: {

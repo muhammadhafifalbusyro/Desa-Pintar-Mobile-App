@@ -16,59 +16,80 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-const moment = require('moment');
-
-class LaporanPenggunaanBiayaPemakaman extends React.Component {
+class SuratKeteranganAsalUsulKayu extends React.Component {
   state = {
-    itemPemakaman: [
+    daftarKayu: [
       {
-        nama: '',
-        volume: '',
-        satuan: '',
-        harga: '',
+        jenis: '',
+        jumlah: '',
+        panjang: '',
+        lebar: '',
+        tebal: '',
       },
     ],
+    jumlahKayu: '',
   };
-  tambahItemPemakaman = () => {
-    this.state.itemPemakaman.push({
-      nama: '',
-      volume: '',
-      satuan: '',
-      harga: '',
-    });
-    this.setState({ahliWaris: this.state.ahliWaris});
+  inputJenisKayu = (text, index) => {
+    const {daftarKayu} = this.state;
+    const newDaftarKayu = [...daftarKayu];
+    newDaftarKayu[index].jenis = text;
+    this.setState({daftarKayu: newDaftarKayu});
   };
-  deleteItemPemakaman = (index) => {
-    const newDelete = this.state.itemPemakaman.filter((value, key) => {
+  inputJumlahKayu = (text, index) => {
+    const {daftarKayu} = this.state;
+    const newDaftarKayu = [...daftarKayu];
+    newDaftarKayu[index].jumlah = text;
+    this.setState({daftarKayu: newDaftarKayu});
+  };
+  inputPanjangKayu = (text, index) => {
+    const {daftarKayu} = this.state;
+    const newDaftarKayu = [...daftarKayu];
+    newDaftarKayu[index].panjang = text;
+    this.setState({daftarKayu: newDaftarKayu});
+  };
+  inputLebarKayu = (text, index) => {
+    const {daftarKayu} = this.state;
+    const newDaftarKayu = [...daftarKayu];
+    newDaftarKayu[index].lebar = text;
+    this.setState({daftarKayu: newDaftarKayu});
+  };
+  inputTebalKayu = (text, index) => {
+    const {daftarKayu} = this.state;
+    const newDaftarKayu = [...daftarKayu];
+    newDaftarKayu[index].tebal = text;
+    this.setState({daftarKayu: newDaftarKayu});
+  };
+  deleteDaftarKayu = (index) => {
+    const newDelete = this.state.daftarKayu.filter((value, key) => {
       return index != key;
     });
-    this.setState({itemPemakaman: newDelete});
+    this.setState({daftarKayu: newDelete});
   };
-  inputNamaItem = (text, index) => {
-    const {itemPemakaman} = this.state;
-    const newItemPemakaman = [...itemPemakaman];
-    newItemPemakaman[index].nama = text;
-    this.setState({itemPemakaman: newItemPemakaman});
+  tambahDaftarKayu = () => {
+    this.state.daftarKayu.push({
+      jenis: '',
+      jumlah: '',
+      panjang: '',
+      lebar: '',
+      tebal: '',
+    });
+    this.setState({daftarKayu: this.state.daftarKayu});
   };
-  inputVolumeItem = (text, index) => {
-    const {itemPemakaman} = this.state;
-    const newItemPemakaman = [...itemPemakaman];
-    newItemPemakaman[index].volume = text;
-    this.setState({itemPemakaman: newItemPemakaman});
-  };
-  inputSatuanItem = (text, index) => {
-    const {itemPemakaman} = this.state;
-    const newItemPemakaman = [...itemPemakaman];
-    newItemPemakaman[index].satuan = text;
-    this.setState({itemPemakaman: newItemPemakaman});
-  };
-  inputHargaItem = (text, index) => {
-    const {itemPemakaman} = this.state;
-    const newItemPemakaman = [...itemPemakaman];
-    newItemPemakaman[index].harga = text;
-    this.setState({itemPemakaman: newItemPemakaman});
+  totalJumlahKayu = () => {
+    const {daftarKayu} = this.state;
+    let newJumlahKayu = 0;
+    for (let x = 0; x < daftarKayu.length; x++) {
+      if (daftarKayu[x].jumlah == '') {
+        let jumlah = 0;
+        newJumlahKayu += jumlah;
+        console.log(daftarKayu);
+      } else if (daftarKayu[x].jumlah != '') {
+        let jumlah = parseInt(daftarKayu[x].jumlah);
+        newJumlahKayu += jumlah;
+      }
+    }
+    return newJumlahKayu;
   };
   render() {
     return (
@@ -85,20 +106,19 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
         <ScrollView style={styles.scroll}>
           <View style={styles.boxTitle}>
             <Text
-              onPress={() => console.log(this.state.ahliWaris)}
               style={{
                 textAlign: 'center',
                 fontSize: 16,
                 fontWeight: 'bold',
                 color: 'grey',
               }}>
-              Laporan Penggunaan Biaya Pemakaman
+              Surat Keterangan Asal Usul Kayu
             </Text>
           </View>
           <View
             style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
             <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
-              Hubungan Keluarga
+              Nama
             </Text>
             <TextInput
               style={{
@@ -113,7 +133,27 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
           <View
             style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
             <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
-              Uang Nominal
+              Umur
+            </Text>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
+          </View>
+          <View
+            style={{paddingHorizontal: 10, paddingBottom: 5, paddingTop: 10}}>
+            <Text style={{color: 'grey', fontWeight: 'bold'}}>Pekerjaan</Text>
+          </View>
+
+          <View
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Alamat
             </Text>
             <TextInput
               style={{
@@ -128,7 +168,7 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
           <View
             style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
             <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
-              Uang Kalimat
+              Kota Tujuan
             </Text>
             <TextInput
               style={{
@@ -143,24 +183,9 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
           <View
             style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
             <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
-              Nama Almarhum
+              Daftar Kayu
             </Text>
-            <TextInput
-              style={{
-                width: '100%',
-                height: 45,
-                borderWidth: 1,
-                borderRadius: 5,
-                borderColor: 'grey',
-              }}
-            />
-          </View>
-          <View
-            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
-            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
-              Item Pemakaman
-            </Text>
-            <TouchableNativeFeedback onPress={() => this.tambahItemPemakaman()}>
+            <TouchableNativeFeedback onPress={() => this.tambahDaftarKayu()}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -176,7 +201,7 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
               </View>
             </TouchableNativeFeedback>
           </View>
-          {this.state.itemPemakaman.map((value, key) => {
+          {this.state.daftarKayu.map((value, key) => {
             return (
               <View style={{width: '100%'}} key={key}>
                 <View
@@ -191,11 +216,11 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
                       color: 'grey',
                       fontWeight: 'bold',
                     }}>
-                    Nama
+                    Jenis
                   </Text>
                   <TextInput
-                    value={value.nama}
-                    onChangeText={(text) => this.inputNamaItem(text, key)}
+                    value={value.jenis}
+                    onChangeText={(text) => this.inputJenisKayu(text, key)}
                     style={{
                       width: '100%',
                       height: 45,
@@ -217,11 +242,12 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
                       color: 'grey',
                       fontWeight: 'bold',
                     }}>
-                    Volume
+                    Jumlah
                   </Text>
                   <TextInput
-                    value={value.volume}
-                    onChangeText={(text) => this.inputVolumeItem(text, key)}
+                    keyboardType="numeric"
+                    value={value.jumlah}
+                    onChangeText={(text) => this.inputJumlahKayu(text, key)}
                     style={{
                       width: '100%',
                       height: 45,
@@ -243,11 +269,11 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
                       color: 'grey',
                       fontWeight: 'bold',
                     }}>
-                    Satuan
+                    Panjang
                   </Text>
                   <TextInput
-                    value={value.satuan}
-                    onChangeText={(text) => this.inputSatuanItem(text, key)}
+                    value={value.panjang}
+                    onChangeText={(text) => this.inputPanjangKayu(text, key)}
                     style={{
                       width: '100%',
                       height: 45,
@@ -269,11 +295,37 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
                       color: 'grey',
                       fontWeight: 'bold',
                     }}>
-                    Harga
+                    Lebar
                   </Text>
                   <TextInput
-                    value={value.harga}
-                    onChangeText={(text) => this.inputHargaItem(text, key)}
+                    value={value.lebar}
+                    onChangeText={(text) => this.inputLebarKayu(text, key)}
+                    style={{
+                      width: '100%',
+                      height: 45,
+                      borderWidth: 1,
+                      borderRadius: 5,
+                      borderColor: 'grey',
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    width: '100%',
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  }}>
+                  <Text
+                    style={{
+                      marginBottom: 10,
+                      color: 'grey',
+                      fontWeight: 'bold',
+                    }}>
+                    Tebal
+                  </Text>
+                  <TextInput
+                    value={value.tebal}
+                    onChangeText={(text) => this.inputTebalKayu(text, key)}
                     style={{
                       width: '100%',
                       height: 45,
@@ -290,7 +342,7 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
                     paddingVertical: 5,
                   }}>
                   <TouchableNativeFeedback
-                    onPress={() => this.deleteItemPemakaman(key)}>
+                    onPress={() => this.deleteDaftarKayu(key)}>
                     <View
                       style={{
                         flexDirection: 'row',
@@ -315,18 +367,40 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
             style={{
               width: '100%',
               paddingHorizontal: 10,
-              paddingVertical: 15,
-              flexDirection: 'row',
+              paddingVertical: 5,
             }}>
+            <Text
+              style={{
+                marginBottom: 10,
+                color: 'grey',
+                fontWeight: 'bold',
+              }}>
+              Total Jumlah Kayu
+            </Text>
+            <View
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+                justifyContent: 'center',
+                padding: 5,
+                backgroundColor: 'rgba(0,0,0,0.1)',
+              }}>
+              <Text>{this.totalJumlahKayu()}</Text>
+            </View>
+          </View>
+          <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
             <TouchableNativeFeedback>
               <View
                 style={{
                   height: 40,
                   width: 100,
+                  backgroundColor: '#61d1de',
+                  borderRadius: 5,
                   justifyContent: 'center',
                   alignItems: 'center',
-                  borderRadius: 5,
-                  backgroundColor: '#61d1de',
                 }}>
                 <Text style={{color: 'white'}}>Submit</Text>
               </View>
@@ -336,11 +410,11 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
                 style={{
                   height: 40,
                   width: 100,
+                  backgroundColor: '#ff9c96',
+                  borderRadius: 5,
                   justifyContent: 'center',
                   alignItems: 'center',
-                  borderRadius: 5,
-                  backgroundColor: '#ff9c96',
-                  marginLeft: 20,
+                  marginLeft: 10,
                 }}>
                 <Text style={{color: 'white'}}>Batal</Text>
               </View>
@@ -351,7 +425,7 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
     );
   }
 }
-export default LaporanPenggunaanBiayaPemakaman;
+export default SuratKeteranganAsalUsulKayu;
 
 const styles = StyleSheet.create({
   container: {
