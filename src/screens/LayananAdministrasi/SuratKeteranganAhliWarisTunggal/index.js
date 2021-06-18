@@ -39,7 +39,7 @@ class SuratKeteranganAhliWarisTunggal extends React.Component {
                 fontWeight: 'bold',
                 color: 'grey',
               }}>
-              Surat Keterangan Ahli Waris Non Tunggal (Santunan Duka)
+              Surat Keterangan Ahli Waris Tunggal (Santunan Duka)
             </Text>
           </View>
           <View
@@ -106,7 +106,8 @@ class SuratKeteranganAhliWarisTunggal extends React.Component {
             />
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => alert('Belum dihubungkan ke API !')}>
               <View
                 style={{
                   height: 40,

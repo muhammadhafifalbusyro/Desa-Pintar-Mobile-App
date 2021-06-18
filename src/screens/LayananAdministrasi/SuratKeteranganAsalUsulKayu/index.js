@@ -17,6 +17,8 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const axios = require('axios');
+
 class SuratKeteranganAsalUsulKayu extends React.Component {
   state = {
     daftarKayu: [
@@ -29,6 +31,88 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
       },
     ],
     jumlahKayu: '',
+    nama: '',
+    umur: '',
+    pekerjaan: '',
+    alamat: '',
+    kota_tujuan: '',
+    modalVisible: false,
+    token: '',
+  };
+  componentDidMount() {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({token: value});
+    });
+  }
+
+  tambahLayanan = () => {
+    const {
+      nama_dokumen_salah,
+      nama_dokumen_benar,
+      nama_orang_salah,
+      nama_orang_benar,
+    } = this.state;
+    if (
+      nama_dokumen_salah != '' &&
+      nama_orang_salah != '' &&
+      nama_dokumen_benar != '' &&
+      nama_orang_benar != ''
+    ) {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/bedanama/';
+
+      const datas = {
+        atribut: {
+          dokumen_salah: {
+            nama_dokumen: nama_dokumen_salah,
+            nama_orang: nama_orang_salah,
+          },
+          dokumen_benar: {
+            nama_dokumen: nama_dokumen_benar,
+            nama_orang: nama_orang_benar,
+          },
+        },
+      };
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson.data);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
   };
   inputJenisKayu = (text, index) => {
     const {daftarKayu} = this.state;
@@ -76,6 +160,7 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
     });
     this.setState({daftarKayu: this.state.daftarKayu});
   };
+
   totalJumlahKayu = () => {
     const {daftarKayu} = this.state;
     let newJumlahKayu = 0;
@@ -94,6 +179,34 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -121,6 +234,8 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
               Nama
             </Text>
             <TextInput
+              value={this.state.nama}
+              onChangeText={(teks) => this.setState({nama: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -136,6 +251,8 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
               Umur
             </Text>
             <TextInput
+              value={this.state.umur}
+              onChangeText={(teks) => this.setState({umur: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -146,16 +263,30 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
             />
           </View>
           <View
-            style={{paddingHorizontal: 10, paddingBottom: 5, paddingTop: 10}}>
-            <Text style={{color: 'grey', fontWeight: 'bold'}}>Pekerjaan</Text>
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
+              Pekerjaan
+            </Text>
+            <TextInput
+              value={this.state.pekerjaan}
+              onChangeText={(teks) => this.setState({pekerjaan: teks})}
+              style={{
+                width: '100%',
+                height: 45,
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: 'grey',
+              }}
+            />
           </View>
-
           <View
             style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
             <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
               Alamat
             </Text>
             <TextInput
+              value={this.state.alamat}
+              onChangeText={(teks) => this.setState({alamat: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -171,6 +302,8 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
               Kota Tujuan
             </Text>
             <TextInput
+              value={this.state.kota_tujuan}
+              onChangeText={(teks) => this.setState({kota_tujuan: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -392,7 +525,8 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
             </View>
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => alert('Belum dihubungkan ke API !')}>
               <View
                 style={{
                   height: 40,

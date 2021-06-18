@@ -16,13 +16,15 @@ class Login extends React.Component {
   state = {
     // username: '1234567891011121',
     // password: '20210423',
-    username:'7171036311710001',
-    password:'19711123',
+    username: '7171036311710001',
+    password: '19711123',
     // username: '',
     // password: '',
     loading: false,
   };
   login = () => {
+    // this.props.navigation.replace('MainScreens');
+    // return false;
     this.setState({loading: true});
     const {username, password} = this.state;
 

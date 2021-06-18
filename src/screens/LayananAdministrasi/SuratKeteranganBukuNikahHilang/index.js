@@ -18,11 +18,108 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const axios = require('axios');
+
 const heighDim = Dimensions.get('window').height;
 class SuratKeteranganBukuNikahHilang extends React.Component {
+  state = {
+    menikah_dengan: '',
+    tgl_menikah: '',
+    alasan_hilang: '',
+    modalVisible: false,
+    token: '',
+  };
+  componentDidMount() {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({token: value});
+    });
+  }
+
+  tambahLayanan = () => {
+    const {menikah_dengan, tgl_menikah, alasan_hilang} = this.state;
+    if (menikah_dengan != '' && tgl_menikah != '' && alasan_hilang != '') {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/bukunikah/';
+
+      const datas = {
+        atribut: {
+          menikah_dengan: menikah_dengan,
+          tgl_menikah: tgl_menikah,
+          alasan_hilang: alasan_hilang,
+        },
+      };
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson.data);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -51,6 +148,8 @@ class SuratKeteranganBukuNikahHilang extends React.Component {
               Menikah Dengan
             </Text>
             <TextInput
+              value={this.state.menikah_dengan}
+              onChangeText={(teks) => this.setState({menikah_dengan: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -66,6 +165,8 @@ class SuratKeteranganBukuNikahHilang extends React.Component {
               Tanggal Menikah
             </Text>
             <TextInput
+              value={this.state.tgl_menikah}
+              onChangeText={(teks) => this.setState({tgl_menikah: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -81,6 +182,9 @@ class SuratKeteranganBukuNikahHilang extends React.Component {
               Alasan Hilang
             </Text>
             <TextInput
+              value={this.state.alasan_hilang}
+              onChangeText={(teks) => this.setState({alasan_hilang: teks})}
+              textAlignVertical="top"
               style={{
                 width: '100%',
                 height: heighDim / 4,
@@ -91,7 +195,7 @@ class SuratKeteranganBukuNikahHilang extends React.Component {
             />
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,

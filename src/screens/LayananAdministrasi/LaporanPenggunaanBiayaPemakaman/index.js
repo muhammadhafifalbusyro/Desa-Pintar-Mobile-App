@@ -318,7 +318,8 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
               paddingVertical: 15,
               flexDirection: 'row',
             }}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => alert('Belum dihubungkan ke API !')}>
               <View
                 style={{
                   height: 40,

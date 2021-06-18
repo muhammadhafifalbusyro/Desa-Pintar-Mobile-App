@@ -19,11 +19,123 @@ import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const heigtDim = Dimensions.get('window').height;
+const axios = require('axios');
 
 class OrangYangSama extends React.Component {
+  state = {
+    nama_dokumen_salah: '',
+    nama_orang_salah: '',
+    nama_dokumen_benar: '',
+    nama_orang_benar: '',
+    token: '',
+    modalVisible: false,
+  };
+  componentDidMount() {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({token: value});
+    });
+  }
+
+  tambahLayanan = () => {
+    const {
+      nama_dokumen_salah,
+      nama_dokumen_benar,
+      nama_orang_salah,
+      nama_orang_benar,
+    } = this.state;
+    if (
+      nama_dokumen_salah != '' &&
+      nama_orang_salah != '' &&
+      nama_dokumen_benar != '' &&
+      nama_orang_benar != ''
+    ) {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/bedanama/';
+
+      const datas = {
+        atribut: {
+          dokumen_salah: {
+            nama_dokumen: nama_dokumen_salah,
+            nama_orang: nama_orang_salah,
+          },
+          dokumen_benar: {
+            nama_dokumen: nama_dokumen_benar,
+            nama_orang: nama_orang_benar,
+          },
+        },
+      };
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson.data);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -52,6 +164,8 @@ class OrangYangSama extends React.Component {
               Nama Dokumen (salah)
             </Text>
             <TextInput
+              value={this.state.nama_dokumen_salah}
+              onChangeText={(teks) => this.setState({nama_dokumen_salah: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -67,6 +181,8 @@ class OrangYangSama extends React.Component {
               Nama Orang (salah)
             </Text>
             <TextInput
+              value={this.state.nama_orang_salah}
+              onChangeText={(teks) => this.setState({nama_orang_salah: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -82,6 +198,8 @@ class OrangYangSama extends React.Component {
               Nama Dokumen (benar)
             </Text>
             <TextInput
+              value={this.state.nama_dokumen_benar}
+              onChangeText={(teks) => this.setState({nama_dokumen_benar: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -97,6 +215,8 @@ class OrangYangSama extends React.Component {
               Nama Orang (benar)
             </Text>
             <TextInput
+              value={this.state.nama_orang_benar}
+              onChangeText={(teks) => this.setState({nama_orang_benar: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -108,7 +228,7 @@ class OrangYangSama extends React.Component {
           </View>
 
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,

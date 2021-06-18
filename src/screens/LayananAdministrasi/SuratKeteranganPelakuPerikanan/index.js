@@ -96,7 +96,8 @@ class SuratKeteranganPelakuPerikanan extends React.Component {
           </View>
 
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => alert('Belum dihubungkan ke API !')}>
               <View
                 style={{
                   height: 40,

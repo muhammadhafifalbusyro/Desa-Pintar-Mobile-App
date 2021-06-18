@@ -17,7 +17,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class SuratKeteranganTidakMampu extends React.Component {
+class SuratKeteranganSiswaTidakMampu extends React.Component {
   render() {
     return (
       <View style={styles.container}>
@@ -108,7 +108,8 @@ class SuratKeteranganTidakMampu extends React.Component {
             </View>
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => alert('Belum dihubungkan ke API !')}>
               <View
                 style={{
                   height: 40,
@@ -141,7 +142,7 @@ class SuratKeteranganTidakMampu extends React.Component {
     );
   }
 }
-export default SuratKeteranganTidakMampu;
+export default SuratKeteranganSiswaTidakMampu;
 
 const styles = StyleSheet.create({
   container: {
