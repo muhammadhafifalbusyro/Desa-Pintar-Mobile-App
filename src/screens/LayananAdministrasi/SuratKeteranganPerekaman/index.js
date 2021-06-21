@@ -26,6 +26,7 @@ class SuratKeteranganPerekaman extends React.Component {
     nama_subjek: '',
     keterangan: '',
     modalVisible: false,
+    token: '',
   };
   componentDidMount() {
     AsyncStorage.getItem('access').then((value) => {

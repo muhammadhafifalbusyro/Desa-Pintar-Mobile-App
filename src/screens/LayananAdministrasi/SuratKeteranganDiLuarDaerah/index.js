@@ -20,11 +20,109 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SuratKeteranganPerekaman from '../SuratKeteranganPerekaman';
 
 const heightDim = Dimensions.get('window').height;
-
+const axios = require('axios');
 class SuratKeteranganDiluarDaerah extends React.Component {
+  state = {
+    modalVisible: false,
+    token: '',
+    nama_daerah: '',
+    jenis_perjalanan: '',
+    jenis_rangka_perjalanan: '',
+  };
+  componentDidMount() {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({token: value});
+    });
+  }
+  tambahLayanan = () => {
+    const {nama_daerah, jenis_rangka_perjalanan, jenis_perjalanan} = this.state;
+    if (
+      nama_daerah != '' &&
+      jenis_perjalanan != '' &&
+      jenis_rangka_perjalanan != ''
+    ) {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/kld/';
+
+      const datas = {
+        atribut: {
+          nama_daerah,
+          jenis_rangka_perjalanan,
+          jenis_perjalanan,
+        },
+      };
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson.data);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -53,6 +151,8 @@ class SuratKeteranganDiluarDaerah extends React.Component {
               Nama Daerah
             </Text>
             <TextInput
+              value={this.state.nama_daerah}
+              onChangeText={(teks) => this.setState({nama_daerah: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -68,6 +168,8 @@ class SuratKeteranganDiluarDaerah extends React.Component {
               Jenis Perjalanan
             </Text>
             <TextInput
+              value={this.state.jenis_perjalanan}
+              onChangeText={(teks) => this.setState({jenis_perjalanan: teks})}
               textAlignVertical="top"
               style={{
                 width: '100%',
@@ -84,6 +186,10 @@ class SuratKeteranganDiluarDaerah extends React.Component {
               Jenis Rangka Perjalanan
             </Text>
             <TextInput
+              value={this.state.jenis_rangka_perjalanan}
+              onChangeText={(teks) =>
+                this.setState({jenis_rangka_perjalanan: teks})
+              }
               textAlignVertical="top"
               style={{
                 width: '100%',
@@ -96,8 +202,7 @@ class SuratKeteranganDiluarDaerah extends React.Component {
           </View>
 
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback
-              onPress={() => alert('Belum dihubungkan ke API !')}>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,
@@ -110,7 +215,8 @@ class SuratKeteranganDiluarDaerah extends React.Component {
                 <Text style={{color: 'white'}}>Submit</Text>
               </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => this.props.navigation.goBack()}>
               <View
                 style={{
                   height: 40,

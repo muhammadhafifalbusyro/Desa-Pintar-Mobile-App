@@ -17,7 +17,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-
+const axios = require('axios');
 const moment = require('moment');
 
 class LaporanPenggunaanBiayaPemakaman extends React.Component {
@@ -30,7 +30,19 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
         harga: '',
       },
     ],
+    hubungan_keluarga: '',
+    uang_nominal: '',
+    unag_kalimat: '',
+    nama_almarhum: '',
+    visible: false,
+    modalVisible: false,
+    token: '',
   };
+  componentDidMount() {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({token: value});
+    });
+  }
   tambahItemPemakaman = () => {
     this.state.itemPemakaman.push({
       nama: '',
@@ -70,9 +82,131 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
     newItemPemakaman[index].harga = text;
     this.setState({itemPemakaman: newItemPemakaman});
   };
+  tambahLayanan = () => {
+    const {
+      hubungan_keluarga,
+      uang_nominal,
+      unag_kalimat,
+      nama_almarhum,
+      itemPemakaman,
+    } = this.state;
+    let blankName = 0;
+    let blankVolume = 0;
+    let blankSatuan = 0;
+    let blankHarga = 0;
+
+    for (let x = 0; x < itemPemakaman.length; x++) {
+      if (itemPemakaman[x].nama == '') {
+        blankName += 1;
+      } else if (itemPemakaman[x].volume == '') {
+        blankVolume += 1;
+      } else if (itemPemakaman[x].satuan == '') {
+        blankSatuan += 1;
+      } else if (itemPemakaman[x].harga == '') {
+        blankHarga += 1;
+      }
+    }
+
+    if (
+      hubungan_keluarga != '' &&
+      uang_nominal != '' &&
+      unag_kalimat != '' &&
+      nama_almarhum != '' &&
+      blankName == 0 &&
+      blankVolume == 0 &&
+      blankSatuan == 0 &&
+      blankHarga == 0 &&
+      itemPemakaman.length != 0
+    ) {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/biayapemakaman/';
+
+      const datas = {
+        atribut: {
+          hubungan_keluarga: hubungan_keluarga,
+          uang_nominal: uang_nominal,
+          uang_kalimat: unag_kalimat,
+          nama_almarhum: nama_almarhum,
+          item_pemakaman: itemPemakaman,
+        },
+      };
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -101,6 +235,8 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
               Hubungan Keluarga
             </Text>
             <TextInput
+              value={this.state.hubungan_keluarga}
+              onChangeText={(teks) => this.setState({hubungan_keluarga: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -116,6 +252,9 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
               Uang Nominal
             </Text>
             <TextInput
+              value={this.state.uang_nominal}
+              onChangeText={(teks) => this.setState({uang_nominal: teks})}
+              keyboardType="numeric"
               style={{
                 width: '100%',
                 height: 45,
@@ -131,6 +270,9 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
               Uang Kalimat
             </Text>
             <TextInput
+              value={this.state.unag_kalimat}
+              onChangeText={(teks) => this.setState({unag_kalimat: teks})}
+              keyboardType="numeric"
               style={{
                 width: '100%',
                 height: 45,
@@ -146,6 +288,8 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
               Nama Almarhum
             </Text>
             <TextInput
+              value={this.state.nama_almarhum}
+              onChangeText={(teks) => this.setState({nama_almarhum: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -221,6 +365,7 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
                   </Text>
                   <TextInput
                     value={value.volume}
+                    keyboardType="numeric"
                     onChangeText={(text) => this.inputVolumeItem(text, key)}
                     style={{
                       width: '100%',
@@ -246,6 +391,7 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
                     Satuan
                   </Text>
                   <TextInput
+                    keyboardType="numeric"
                     value={value.satuan}
                     onChangeText={(text) => this.inputSatuanItem(text, key)}
                     style={{
@@ -272,6 +418,7 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
                     Harga
                   </Text>
                   <TextInput
+                    keyboardType="numeric"
                     value={value.harga}
                     onChangeText={(text) => this.inputHargaItem(text, key)}
                     style={{
@@ -318,8 +465,7 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
               paddingVertical: 15,
               flexDirection: 'row',
             }}>
-            <TouchableNativeFeedback
-              onPress={() => alert('Belum dihubungkan ke API !')}>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,
@@ -332,7 +478,8 @@ class LaporanPenggunaanBiayaPemakaman extends React.Component {
                 <Text style={{color: 'white'}}>Submit</Text>
               </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => this.props.navigation.goBack()}>
               <View
                 style={{
                   height: 40,

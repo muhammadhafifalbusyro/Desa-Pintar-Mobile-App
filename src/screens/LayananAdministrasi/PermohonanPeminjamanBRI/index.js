@@ -13,14 +13,245 @@ import {
   Modal,
   ActivityIndicator,
   RefreshControl,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+const widthDim = Dimensions.get('window').width;
+const axios = require('axios');
 class PermohonanPeminjamanBRI extends React.Component {
+  state = {
+    ibu_kandung: '',
+    bantuan_kalimat: '',
+    bantuan_angka: '',
+    jangka_waktu: '',
+    nama_usaha: '',
+    unit_bri: '',
+    lokasi_bri: '',
+    nama_kuasa: '',
+    umur_kuasa: '',
+    pekerjaan_kuasa: '',
+    alamat_kuasa: '',
+    objek_jaminan: '',
+    defaultDaftarLampiran: [],
+    data: [
+      {
+        nama: 'Fotocopy KK',
+      },
+      {
+        nama: 'Fotocopy KTP',
+      },
+    ],
+    visible: false,
+    modalVisible: false,
+    token: '',
+  };
+  componentDidMount() {
+    AsyncStorage.getItem('access').then((value) =>
+      this.setState({token: value}),
+    );
+  }
+  deleteItemDaftar = (index, value) => {
+    const newDelete = this.state.defaultDaftarLampiran.filter((value, key) => {
+      return index != key;
+    });
+    this.state.data.push({nama: value});
+    console.log(newDelete);
+    this.setState({defaultDaftarLampiran: newDelete, data: this.state.data});
+  };
+  tambahLayanan = () => {
+    const {
+      ibu_kandung,
+      bantuan_angka,
+      bantuan_kalimat,
+      jangka_waktu,
+      nama_usaha,
+      unit_bri,
+      lokasi_bri,
+      nama_kuasa,
+      pekerjaan_kuasa,
+      alamat_kuasa,
+      objek_jaminan,
+      defaultDaftarLampiran,
+    } = this.state;
+
+    if (
+      ibu_kandung != '' &&
+      bantuan_angka != '' &&
+      bantuan_kalimat != '' &&
+      jangka_waktu != '' &&
+      nama_usaha != '' &&
+      unit_bri != '' &&
+      lokasi_bri != '' &&
+      nama_kuasa != '' &&
+      pekerjaan_kuasa != '' &&
+      alamat_kuasa != '' &&
+      objek_jaminan != '' &&
+      defaultDaftarLampiran.length != 0
+    ) {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/perm_bri/';
+
+      const datas = {
+        atribut: {
+          ibu_kandung: ibu_kandung,
+          bantuan_kalimat: bantuan_kalimat,
+          bantuan_angka: bantuan_angka,
+          jangka_waktu: jangka_waktu,
+          nama_usaha: nama_usaha,
+          unit_bri: unit_bri,
+          lokasi_bri: lokasi_bri,
+          daftar_lampiran: defaultDaftarLampiran,
+        },
+      };
+      console.log(datas);
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er.response);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.visible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => this.setState({visible: false})}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                height: '40%',
+                width: '90%',
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+              }}>
+              <View
+                style={{
+                  height: 50,
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderBottomWidth: 1,
+                  borderColor: 'rgba(0,0,0,0.3)',
+                }}>
+                <Text style={{fontWeight: 'bold', color: '#444444'}}>
+                  Pilih Lampiran
+                </Text>
+              </View>
+              <ScrollView style={{flex: 1, padding: 10}}>
+                {this.state.data.map((value, key) => {
+                  return (
+                    <View
+                      key={key}
+                      style={{
+                        height: 40,
+                        marginBottom: 3,
+                        width: '100%',
+                        padding: 5,
+                        borderBottomWidth: 1,
+                        borderColor: 'rgba(0,0,0,0.3)',
+                      }}>
+                      <Text
+                        onPress={() => {
+                          this.state.defaultDaftarLampiran.push(value.nama);
+                          const newDelete = this.state.data.filter(
+                            (value, i) => {
+                              return key != i;
+                            },
+                          );
+                          this.setState({
+                            defaultDaftarLampiran: this.state
+                              .defaultDaftarLampiran,
+                            data: newDelete,
+                            visible: false,
+                          });
+                        }}>
+                        {value.nama}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -48,6 +279,8 @@ class PermohonanPeminjamanBRI extends React.Component {
               Ibu Kandung
             </Text>
             <TextInput
+              value={this.state.ibu_kandung}
+              onChangeText={(teks) => this.setState({ibu_kandung: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -63,6 +296,8 @@ class PermohonanPeminjamanBRI extends React.Component {
               Bantuan Kalimat
             </Text>
             <TextInput
+              value={this.state.bantuan_kalimat}
+              onChangeText={(teks) => this.setState({bantuan_kalimat: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -78,6 +313,9 @@ class PermohonanPeminjamanBRI extends React.Component {
               Bantuan Angka
             </Text>
             <TextInput
+              value={this.state.bantuan_angka}
+              onChangeText={(teks) => this.setState({bantuan_angka: teks})}
+              keyboardType="numeric"
               style={{
                 width: '100%',
                 height: 45,
@@ -93,6 +331,9 @@ class PermohonanPeminjamanBRI extends React.Component {
               Jangka Waktu
             </Text>
             <TextInput
+              value={this.state.jangka_waktu}
+              onChangeText={(teks) => this.setState({jangka_waktu: teks})}
+              keyboardType="numeric"
               style={{
                 width: '100%',
                 height: 45,
@@ -108,6 +349,8 @@ class PermohonanPeminjamanBRI extends React.Component {
               Nama Usaha
             </Text>
             <TextInput
+              value={this.state.nama_usaha}
+              onChangeText={(teks) => this.setState({nama_usaha: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -123,6 +366,8 @@ class PermohonanPeminjamanBRI extends React.Component {
               Unit BRI
             </Text>
             <TextInput
+              value={this.state.unit_bri}
+              onChangeText={(teks) => this.setState({unit_bri: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -138,6 +383,8 @@ class PermohonanPeminjamanBRI extends React.Component {
               Lokasi BRI
             </Text>
             <TextInput
+              value={this.state.lokasi_bri}
+              onChangeText={(teks) => this.setState({lokasi_bri: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -153,6 +400,8 @@ class PermohonanPeminjamanBRI extends React.Component {
               Nama Kuasa
             </Text>
             <TextInput
+              value={this.state.nama_kuasa}
+              onChangeText={(teks) => this.setState({nama_kuasa: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -168,6 +417,8 @@ class PermohonanPeminjamanBRI extends React.Component {
               Umur Kuasa
             </Text>
             <TextInput
+              value={this.state.umur_kuasa}
+              onChangeText={(teks) => this.setState({umur_kuasa: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -178,37 +429,21 @@ class PermohonanPeminjamanBRI extends React.Component {
             />
           </View>
           <View
-            style={{paddingHorizontal: 10, paddingBottom: 5, paddingTop: 10}}>
-            <Text style={{color: 'grey', fontWeight: 'bold'}}>
+            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
               Pekerjaan Kuasa
             </Text>
-          </View>
-          <View style={{padding: 10, width: '100%'}}>
-            <View
+            <TextInput
+              value={this.state.pekerjaan_kuasa}
+              onChangeText={(teks) => this.setState({pekerjaan_kuasa: teks})}
               style={{
-                height: 45,
                 width: '100%',
-                flexDirection: 'row',
+                height: 45,
+                borderWidth: 1,
                 borderRadius: 5,
                 borderColor: 'grey',
-                borderWidth: 1,
-                alignItems: 'center',
-                paddingHorizontal: 5,
-                justifyContent: 'space-between',
-              }}>
-              <Text style={{color: '#444444'}}>hallo</Text>
-              <View
-                style={{
-                  height: 35,
-                  width: 35,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderLeftWidth: 1,
-                  borderColor: 'grey',
-                }}>
-                <Icon name="chevron-down" size={30} color="grey" />
-              </View>
-            </View>
+              }}
+            />
           </View>
           <View
             style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
@@ -216,6 +451,8 @@ class PermohonanPeminjamanBRI extends React.Component {
               Alamat Kuasa
             </Text>
             <TextInput
+              value={this.state.alamat_kuasa}
+              onChangeText={(teks) => this.setState({alamat_kuasa: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -231,6 +468,8 @@ class PermohonanPeminjamanBRI extends React.Component {
               Objek Jaminan Kuasa
             </Text>
             <TextInput
+              value={this.state.objek_jaminan}
+              onChangeText={(teks) => this.setState({objek_jaminan: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -259,7 +498,34 @@ class PermohonanPeminjamanBRI extends React.Component {
                 paddingHorizontal: 5,
                 justifyContent: 'space-between',
               }}>
-              <Text style={{color: '#444444'}}>hallo</Text>
+              <View
+                style={{
+                  width: '80%',
+                  flexWrap: 'wrap',
+                  flexDirection: 'row',
+                }}>
+                {this.state.defaultDaftarLampiran.map((value, key) => {
+                  return (
+                    <View
+                      key={key}
+                      style={{
+                        flexDirection: 'row',
+                        backgroundColor: 'rgba(0,0,0,0.2)',
+                        alignItems: 'center',
+                        padding: 2,
+                        borderRadius: 2,
+                        margin: 2,
+                      }}>
+                      <Text style={{color: '#444444'}}>{value}</Text>
+                      <Icon
+                        name="delete"
+                        style={{marginLeft: 5}}
+                        onPress={() => this.deleteItemDaftar(key, value)}
+                      />
+                    </View>
+                  );
+                })}
+              </View>
               <View
                 style={{
                   height: 35,
@@ -269,13 +535,17 @@ class PermohonanPeminjamanBRI extends React.Component {
                   borderLeftWidth: 1,
                   borderColor: 'grey',
                 }}>
-                <Icon name="chevron-down" size={30} color="grey" />
+                <Icon
+                  name="chevron-down"
+                  size={30}
+                  color="grey"
+                  onPress={() => this.setState({visible: true})}
+                />
               </View>
             </View>
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback
-              onPress={() => alert('Belum dihubungkan ke API !')}>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,

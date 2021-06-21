@@ -20,11 +20,102 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SuratKeteranganPerekaman from '../SuratKeteranganPerekaman';
 
 const heightDim = Dimensions.get('window').height;
+const axios = require('axios');
 
 class SuratPengantarRapidTes extends React.Component {
+  state = {
+    modalVisible: false,
+    tempat_rapid: '',
+    token: '',
+  };
+  componentDidMount() {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({token: value});
+    });
+  }
+  tambahLayanan = () => {
+    const {tempat_rapid} = this.state;
+    if (tempat_rapid != '') {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/rapidtest/';
+
+      const datas = {
+        atribut: {
+          tempat_rapid_test: tempat_rapid,
+        },
+      };
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson.data);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -53,6 +144,8 @@ class SuratPengantarRapidTes extends React.Component {
               Tempat Rapid Tes
             </Text>
             <TextInput
+              value={this.state.tempat_rapid}
+              onChangeText={(teks) => this.setState({tempat_rapid: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -64,8 +157,7 @@ class SuratPengantarRapidTes extends React.Component {
           </View>
 
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback
-              onPress={() => alert('Belum dihubungkan ke API !')}>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,
@@ -78,7 +170,8 @@ class SuratPengantarRapidTes extends React.Component {
                 <Text style={{color: 'white'}}>Submit</Text>
               </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => this.props.navigation.goBack()}>
               <View
                 style={{
                   height: 40,

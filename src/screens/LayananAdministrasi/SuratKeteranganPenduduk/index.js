@@ -20,11 +20,145 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SuratKeteranganPerekaman from '../SuratKeteranganPerekaman';
 
 const heightDim = Dimensions.get('window').height;
-
+const axios = require('axios');
 class SuratKeteranganPenduduk extends React.Component {
+  state = {
+    nama: '',
+    nik: '',
+    loading: false,
+    token: '',
+    modalVisible: false,
+  };
+
+  componentDidMount() {
+    this.getData();
+  }
+  getData = () => {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({loading: true, token: value});
+      console.log('ini token profil ' + value);
+      const url = 'https://api.istudios.id/v1/users/me';
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${value}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((reJson) => {
+          console.log(reJson);
+          if (reJson.profile) {
+            this.setState({
+              nama: reJson.profile.nama,
+              nik: reJson.profile.nik,
+              loading: false,
+            });
+            ToastAndroid.show(
+              'Berhasil mengambil data',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            this.setState({loading: false});
+            ToastAndroid.show(
+              'Gagal mengambil data',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch((er) => {
+          console.log(er);
+          this.setState({loading: false});
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
+  };
+  tambahLayanan = () => {
+    const {nama, nik} = this.state;
+    if (nama != '' && nik != '') {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/ktt/';
+
+      const datas = {
+        atribut: {},
+      };
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson.data);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -34,7 +168,15 @@ class SuratKeteranganPenduduk extends React.Component {
           />
           <Text style={styles.textHeader}>Layanan</Text>
         </View>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              colors={['#19D2BA']}
+              onRefresh={() => this.getData()}
+            />
+          }>
           <View style={styles.boxTitle}>
             <Text
               style={{
@@ -72,13 +214,14 @@ class SuratKeteranganPenduduk extends React.Component {
                 padding: 5,
                 backgroundColor: 'rgba(0,0,0,0.1)',
               }}>
-              <Text>all</Text>
+              <Text>
+                {this.state.nik} - {this.state.nama}
+              </Text>
             </View>
           </View>
 
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback
-              onPress={() => alert('Belum dihubungkan ke API !')}>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,
@@ -91,7 +234,7 @@ class SuratKeteranganPenduduk extends React.Component {
                 <Text style={{color: 'white'}}>Submit</Text>
               </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback onPress={() => this.state.goBack()}>
               <View
                 style={{
                   height: 40,
