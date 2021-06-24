@@ -18,13 +18,133 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SuratKeteranganPerekaman from '../SuratKeteranganPerekaman';
-
+const moment = require('moment');
 const heightDim = Dimensions.get('window').height;
-
+const axios = require('axios');
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 class SuratKeteranganPenguburan extends React.Component {
+  state = {
+    nama_jenazah: '',
+    tanggal_penguburan: 'DD-MM-YYYY',
+    tanggal_penguburanView: 'DD-MM-YYYY',
+    token: '',
+    modalVisible: false,
+    visibleTanggalPenguburan: false,
+  };
+  componentDidMount() {
+    AsyncStorage.getItem('access').then((value) =>
+      this.setState({token: value}),
+    );
+  }
+  tambahLayanan = () => {
+    const {nama_jenazah, tanggal_penguburan} = this.state;
+    if (nama_jenazah != '' && tanggal_penguburan != 'DD-MM-YYYY') {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/penguburan/';
+      const datas = {
+        atribut: {
+          nama_jenazah,
+          tanggal_penguburan,
+        },
+      };
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson.data);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er.response);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
+  showTanggalPenguburan = () => {
+    this.setState({visibleTanggalPenguburan: true});
+  };
+  hideTanggalPenguburan = () => {
+    this.setState({visibleTanggalPenguburan: false});
+  };
+  handleConfirmTanggalPenguburan = (date) => {
+    // console.log(date);
+    console.log(moment(date).format('YYYY-MM-DD'));
+    this.setState({
+      tanggal_penguburanView: moment(date).format('DD-MM-YYYY'),
+      tanggal_penguburan: moment(date).format('YYYY-MM-DD'),
+    });
+    this.hideTanggalPenguburan();
+  };
   render() {
     return (
       <View style={styles.container}>
+        <DateTimePickerModal
+          isVisible={this.state.visibleTanggalPenguburan}
+          mode="date"
+          onConfirm={(date) => this.handleConfirmTanggalPenguburan(date)}
+          onCancel={() => this.hideTanggalPenguburan()}
+        />
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -53,6 +173,8 @@ class SuratKeteranganPenguburan extends React.Component {
               Nama Jenazah
             </Text>
             <TextInput
+              value={this.state.nama_jenazah}
+              onChangeText={(teks) => this.setState({nama_jenazah: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -63,25 +185,46 @@ class SuratKeteranganPenguburan extends React.Component {
             />
           </View>
           <View
-            style={{width: '100%', paddingHorizontal: 10, paddingVertical: 5}}>
+            style={{paddingHorizontal: 10, width: '100%', paddingVertical: 5}}>
             <Text style={{marginBottom: 10, color: 'grey', fontWeight: 'bold'}}>
               Tanggal Penguburan
             </Text>
-            <TextInput
-              textAlignVertical="top"
+            <View
               style={{
-                width: '100%',
                 height: 45,
-                borderWidth: 1,
+                width: '100%',
+                flexDirection: 'row',
                 borderRadius: 5,
                 borderColor: 'grey',
-              }}
-            />
+                borderWidth: 1,
+                alignItems: 'center',
+                paddingHorizontal: 5,
+                justifyContent: 'space-between',
+              }}>
+              <Text style={{color: '#444444'}}>
+                {this.state.tanggal_penguburanView}
+              </Text>
+              <View
+                style={{
+                  height: 35,
+                  width: 35,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderLeftWidth: 1,
+                  borderColor: 'grey',
+                }}>
+                <Icon
+                  name="calendar"
+                  size={25}
+                  color="grey"
+                  onPress={() => this.showTanggalPenguburan()}
+                />
+              </View>
+            </View>
           </View>
 
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback
-              onPress={() => alert('Belum dihubungkan ke API !')}>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,
@@ -94,7 +237,8 @@ class SuratKeteranganPenguburan extends React.Component {
                 <Text style={{color: 'white'}}>Submit</Text>
               </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => this.props.navigation.goBack()}>
               <View
                 style={{
                   height: 40,
