@@ -20,11 +20,109 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SuratKeteranganPerekaman from '../SuratKeteranganPerekaman';
 
 const heightDim = Dimensions.get('window').height;
-
+const axios = require('axios');
 class SuratKeteranganDudaJanda extends React.Component {
+  state = {
+    token: '',
+    nama_mantan: '',
+    tahunPisah: '',
+    modalVisible: false,
+  };
+  componentDidMount() {
+    AsyncStorage.getItem('access').then((value) => {
+      this.setState({token: value});
+    });
+  }
+  tambahLayanan = () => {
+    const {nama_mantan, tahunPisah} = this.state;
+
+    if (nama_mantan != '' && tahunPisah != '') {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/dudajanda/';
+
+      const datas = {
+        atribut: {
+          nama_mantan_pasangan: nama_mantan,
+          tahun_berpisah: tahunPisah,
+        },
+      };
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -53,6 +151,8 @@ class SuratKeteranganDudaJanda extends React.Component {
               Nama Mantan Pasangan
             </Text>
             <TextInput
+              value={this.state.nama_mantan}
+              onChangeText={(teks) => this.setState({nama_mantan: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -68,7 +168,9 @@ class SuratKeteranganDudaJanda extends React.Component {
               Tahun Berpisah
             </Text>
             <TextInput
-              textAlignVertical="top"
+              value={this.state.tahunPisah}
+              onChangeText={(teks) => this.setState({tahunPisah: teks})}
+              keyboardType="numeric"
               style={{
                 width: '100%',
                 height: 45,
@@ -79,8 +181,7 @@ class SuratKeteranganDudaJanda extends React.Component {
             />
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback
-              onPress={() => alert('Belum dihubungkan ke API !')}>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,
@@ -93,7 +194,8 @@ class SuratKeteranganDudaJanda extends React.Component {
                 <Text style={{color: 'white'}}>Submit</Text>
               </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => this.props.navigation.goBack()}>
               <View
                 style={{
                   height: 40,

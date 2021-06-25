@@ -21,10 +21,280 @@ import SuratKeteranganPerekaman from '../SuratKeteranganPerekaman';
 
 const heightDim = Dimensions.get('window').height;
 
+const axios = require('axios');
+
 class SuratKeteranganPisah extends React.Component {
+  state = {
+    data: [],
+    loading: false,
+    token: '',
+    defaultPenduduk1: 'Select ...',
+    defaultPenduduk2: 'Select ...',
+    visible: false,
+    visible2: false,
+    instansi_pengadilan: '',
+    nama_keperluan: '',
+    modalVisible: false,
+  };
+  componentDidMount() {
+    this.getData();
+  }
+  getData = () => {
+    this.setState({loading: true});
+    AsyncStorage.getItem('access').then((value) => {
+      const url = 'https://api.istudios.id/v1/penduduk/';
+      fetch(url, {
+        headers: {
+          Authorization: `Bearer ${value}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((resJson) => {
+          if (resJson.data) {
+            this.setState({data: resJson.data, token: value, loading: false});
+            ToastAndroid.show(
+              'Data berhasil didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            this.setState({loading: false});
+            ToastAndroid.show(
+              'Data gagal di dapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch((er) => {
+          this.setState({loading: false});
+          ToastAndroid.show(
+            'Network error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
+  };
+  tambahLayanan = () => {
+    const {
+      defaultPenduduk1,
+      defaultPenduduk2,
+      instansi_pengadilan,
+      nama_keperluan,
+    } = this.state;
+    if (
+      defaultPenduduk1 != 'Select ...' &&
+      defaultPenduduk2 != 'Select ...' &&
+      instansi_pengadilan != '' &&
+      nama_keperluan != ''
+    ) {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/ket_pisah/';
+
+      const datas = {
+        atribut: {
+          nama_pasangan: defaultPenduduk2,
+          nama_instansi_pengadilan: instansi_pengadilan,
+          keperluan: nama_keperluan,
+        },
+      };
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson.data);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={this.state.visible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => this.setState({visible: false})}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                height: '40%',
+                width: '90%',
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+              }}>
+              <View
+                style={{
+                  height: 50,
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderBottomWidth: 1,
+                  borderColor: 'rgba(0,0,0,0.3)',
+                }}>
+                <Text style={{fontWeight: 'bold', color: '#444444'}}>
+                  Pilih Nama
+                </Text>
+              </View>
+              <ScrollView style={{flex: 1, padding: 10}}>
+                {this.state.data.map((value, key) => {
+                  return (
+                    <View
+                      key={key}
+                      style={{
+                        height: 40,
+                        marginBottom: 3,
+                        width: '100%',
+                        padding: 5,
+                        borderBottomWidth: 1,
+                        borderColor: 'rgba(0,0,0,0.3)',
+                      }}>
+                      <Text
+                        onPress={() =>
+                          this.setState({
+                            defaultPenduduk1: value.nama,
+                            visible: false,
+                          })
+                        }>
+                        {value.nama}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={this.state.visible2}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => this.setState({visible2: false})}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                height: '40%',
+                width: '90%',
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+              }}>
+              <View
+                style={{
+                  height: 50,
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderBottomWidth: 1,
+                  borderColor: 'rgba(0,0,0,0.3)',
+                }}>
+                <Text style={{fontWeight: 'bold', color: '#444444'}}>
+                  Pilih Nama
+                </Text>
+              </View>
+              <ScrollView style={{flex: 1, padding: 10}}>
+                {this.state.data.map((value, key) => {
+                  return (
+                    <View
+                      key={key}
+                      style={{
+                        height: 40,
+                        marginBottom: 3,
+                        width: '100%',
+                        padding: 5,
+                        borderBottomWidth: 1,
+                        borderColor: 'rgba(0,0,0,0.3)',
+                      }}>
+                      <Text
+                        onPress={() =>
+                          this.setState({
+                            defaultPenduduk2: value.nama,
+                            visible2: false,
+                          })
+                        }>
+                        {value.nama}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -34,7 +304,15 @@ class SuratKeteranganPisah extends React.Component {
           />
           <Text style={styles.textHeader}>Layanan</Text>
         </View>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              colors={['#19D2BA']}
+              onRefresh={() => this.getData()}
+            />
+          }>
           <View style={styles.boxTitle}>
             <Text
               style={{
@@ -63,7 +341,9 @@ class SuratKeteranganPisah extends React.Component {
                 paddingHorizontal: 5,
                 justifyContent: 'space-between',
               }}>
-              <Text style={{color: '#444444'}}>hallo</Text>
+              <Text style={{color: '#444444'}}>
+                {this.state.defaultPenduduk1}
+              </Text>
               <View
                 style={{
                   height: 35,
@@ -73,7 +353,12 @@ class SuratKeteranganPisah extends React.Component {
                   borderLeftWidth: 1,
                   borderColor: 'grey',
                 }}>
-                <Icon name="chevron-down" size={30} color="grey" />
+                <Icon
+                  name="chevron-down"
+                  size={30}
+                  color="grey"
+                  onPress={() => this.setState({visible: true})}
+                />
               </View>
             </View>
           </View>
@@ -96,7 +381,9 @@ class SuratKeteranganPisah extends React.Component {
                 paddingHorizontal: 5,
                 justifyContent: 'space-between',
               }}>
-              <Text style={{color: '#444444'}}>hallo</Text>
+              <Text style={{color: '#444444'}}>
+                {this.state.defaultPenduduk2}
+              </Text>
               <View
                 style={{
                   height: 35,
@@ -106,7 +393,12 @@ class SuratKeteranganPisah extends React.Component {
                   borderLeftWidth: 1,
                   borderColor: 'grey',
                 }}>
-                <Icon name="chevron-down" size={30} color="grey" />
+                <Icon
+                  name="chevron-down"
+                  size={30}
+                  color="grey"
+                  onPress={() => this.setState({visible2: true})}
+                />
               </View>
             </View>
           </View>
@@ -116,6 +408,10 @@ class SuratKeteranganPisah extends React.Component {
               Nama Instansi Pengadilan
             </Text>
             <TextInput
+              value={this.state.instansi_pengadilan}
+              onChangeText={(teks) =>
+                this.setState({instansi_pengadilan: teks})
+              }
               style={{
                 width: '100%',
                 height: 45,
@@ -131,6 +427,8 @@ class SuratKeteranganPisah extends React.Component {
               Nama Keperluan
             </Text>
             <TextInput
+              value={this.state.nama_keperluan}
+              onChangeText={(teks) => this.setState({nama_keperluan: teks})}
               textAlignVertical="top"
               style={{
                 width: '100%',
@@ -142,8 +440,7 @@ class SuratKeteranganPisah extends React.Component {
             />
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback
-              onPress={() => alert('Belum dihubungkan ke API !')}>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,
@@ -156,7 +453,7 @@ class SuratKeteranganPisah extends React.Component {
                 <Text style={{color: 'white'}}>Submit</Text>
               </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback onPress={() => this.props.goBack()}>
               <View
                 style={{
                   height: 40,

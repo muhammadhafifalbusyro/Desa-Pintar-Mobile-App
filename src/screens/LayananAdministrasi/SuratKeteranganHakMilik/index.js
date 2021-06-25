@@ -19,11 +19,244 @@ import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const heigtDim = Dimensions.get('window').height;
-
+const axios = require('axios');
 class SuratKeteranganHakMilik extends React.Component {
+  state = {
+    luasTanahAngka: '',
+    luasTanahKalimat: '',
+    dusunDefault: 'Select ...',
+    batasUtara: '',
+    batasSelatan: '',
+    batasTimur: '',
+    batasBarat: '',
+    saksi1: '',
+    saksi2: '',
+    saksi3: '',
+    data: [],
+    token: '',
+    visible: false,
+    modalVisible: false,
+    loading: false,
+    dusunId: '',
+  };
+  componentDidMount() {
+    this.getData();
+  }
+  getData = () => {
+    this.setState({loading: true});
+    AsyncStorage.getItem('access').then((value) => {
+      const url = 'https://api.istudios.id/v1/saddusun/';
+      fetch(url, {
+        headers: {
+          Authorization: `Bearer ${value}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((resJson) => {
+          if (resJson.data) {
+            this.setState({data: resJson.data, token: value, loading: false});
+            ToastAndroid.show(
+              'Data berhasil didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            this.setState({loading: false});
+            ToastAndroid.show(
+              'Data gagal di dapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch((er) => {
+          this.setState({loading: false});
+          ToastAndroid.show(
+            'Network error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
+  };
+  tambahLayanan = () => {
+    const {
+      luasTanahAngka,
+      luasTanahKalimat,
+      dusunDefault,
+      batasTimur,
+      batasBarat,
+      batasSelatan,
+      batasUtara,
+      saksi1,
+      saksi2,
+      saksi3,
+      dusunId,
+    } = this.state;
+    if (
+      dusunDefault != 'Select ...' &&
+      luasTanahAngka != '' &&
+      luasTanahKalimat != '' &&
+      batasBarat != '' &&
+      batasTimur != '' &&
+      batasUtara != '' &&
+      batasSelatan != '' &&
+      saksi1 != '' &&
+      saksi2 != '' &&
+      saksi3 != ''
+    ) {
+      this.setState({modalVisible: true});
+      const url = 'https://api.istudios.id/v1/layanansurat/shm/';
+
+      const datas = {
+        atribut: {
+          luas_tanah_angka: luasTanahAngka,
+          luas_tanah_kalimat: luasTanahKalimat,
+          dusun_id: dusunId,
+          batas_utara: batasUtara,
+          batas_selatan: batasSelatan,
+          batas_barat: batasBarat,
+          batas_timur: batasTimur,
+          nama_saksi1: saksi1,
+          nama_saksi2: saksi2,
+          nama_saksi3: saksi3,
+        },
+      };
+      axios
+        .post(url, datas, {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((resJson) => {
+          console.log(resJson.data);
+          if (resJson.data) {
+            ToastAndroid.show(
+              'Berhasil ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          } else {
+            ToastAndroid.show(
+              'Gagal ditambahkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            this.setState({modalVisible: false});
+          }
+        })
+        .catch((er) => {
+          console.log(er.response);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        });
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={this.state.visible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => this.setState({visible: false})}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                height: '40%',
+                width: '90%',
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+              }}>
+              <View
+                style={{
+                  height: 50,
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderBottomWidth: 1,
+                  borderColor: 'rgba(0,0,0,0.3)',
+                }}>
+                <Text style={{fontWeight: 'bold', color: '#444444'}}>
+                  Pilih Dusun
+                </Text>
+              </View>
+              <ScrollView style={{flex: 1, padding: 10}}>
+                {this.state.data.map((value, key) => {
+                  return (
+                    <View
+                      key={key}
+                      style={{
+                        height: 40,
+                        marginBottom: 3,
+                        width: '100%',
+                        padding: 5,
+                        borderBottomWidth: 1,
+                        borderColor: 'rgba(0,0,0,0.3)',
+                      }}>
+                      <Text
+                        onPress={() =>
+                          this.setState({
+                            dusunDefault: value.nama,
+                            visible: false,
+                            dusunId: value.id,
+                          })
+                        }>
+                        {value.nama}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -33,7 +266,15 @@ class SuratKeteranganHakMilik extends React.Component {
           />
           <Text style={styles.textHeader}>Layanan</Text>
         </View>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              colors={['#19D2BA']}
+              onRefresh={() => this.getData()}
+            />
+          }>
           <View style={styles.boxTitle}>
             <Text
               style={{
@@ -52,6 +293,9 @@ class SuratKeteranganHakMilik extends React.Component {
               Luas Tanah Angka
             </Text>
             <TextInput
+              value={this.state.luasTanahAngka}
+              onChangeText={(teks) => this.setState({luasTanahAngka: teks})}
+              keyboardType="numeric"
               style={{
                 width: '100%',
                 height: 45,
@@ -67,6 +311,8 @@ class SuratKeteranganHakMilik extends React.Component {
               Luas Tanah Kalimat
             </Text>
             <TextInput
+              value={this.state.luasTanahKalimat}
+              onChangeText={(teks) => this.setState({luasTanahKalimat: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -93,7 +339,7 @@ class SuratKeteranganHakMilik extends React.Component {
                 paddingHorizontal: 5,
                 justifyContent: 'space-between',
               }}>
-              <Text style={{color: '#444444'}}>hallo</Text>
+              <Text style={{color: '#444444'}}>{this.state.dusunDefault}</Text>
               <View
                 style={{
                   height: 35,
@@ -103,7 +349,12 @@ class SuratKeteranganHakMilik extends React.Component {
                   borderLeftWidth: 1,
                   borderColor: 'grey',
                 }}>
-                <Icon name="chevron-down" size={30} color="grey" />
+                <Icon
+                  name="chevron-down"
+                  size={30}
+                  color="grey"
+                  onPress={() => this.setState({visible: true})}
+                />
               </View>
             </View>
           </View>
@@ -113,6 +364,8 @@ class SuratKeteranganHakMilik extends React.Component {
               Batas Utara
             </Text>
             <TextInput
+              value={this.state.batasUtara}
+              onChangeText={(teks) => this.setState({batasUtara: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -128,6 +381,8 @@ class SuratKeteranganHakMilik extends React.Component {
               Batas Selatan
             </Text>
             <TextInput
+              value={this.state.batasSelatan}
+              onChangeText={(teks) => this.setState({batasSelatan: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -143,6 +398,8 @@ class SuratKeteranganHakMilik extends React.Component {
               Batas Barat
             </Text>
             <TextInput
+              value={this.state.batasBarat}
+              onChangeText={(teks) => this.setState({batasBarat: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -158,6 +415,8 @@ class SuratKeteranganHakMilik extends React.Component {
               Batas Timur
             </Text>
             <TextInput
+              value={this.state.batasTimur}
+              onChangeText={(teks) => this.setState({batasTimur: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -173,6 +432,8 @@ class SuratKeteranganHakMilik extends React.Component {
               Nama Saksi 1
             </Text>
             <TextInput
+              value={this.state.saksi1}
+              onChangeText={(teks) => this.setState({saksi1: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -188,6 +449,8 @@ class SuratKeteranganHakMilik extends React.Component {
               Nama Saksi 2
             </Text>
             <TextInput
+              value={this.state.saksi2}
+              onChangeText={(teks) => this.setState({saksi2: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -203,6 +466,8 @@ class SuratKeteranganHakMilik extends React.Component {
               Nama Saksi 3
             </Text>
             <TextInput
+              value={this.state.saksi3}
+              onChangeText={(teks) => this.setState({saksi3: teks})}
               style={{
                 width: '100%',
                 height: 45,
@@ -213,7 +478,7 @@ class SuratKeteranganHakMilik extends React.Component {
             />
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,
@@ -226,7 +491,8 @@ class SuratKeteranganHakMilik extends React.Component {
                 <Text style={{color: 'white'}}>Submit</Text>
               </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => this.props.navigation.goBack()}>
               <View
                 style={{
                   height: 40,
