@@ -46,31 +46,50 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
   }
 
   tambahLayanan = () => {
-    const {
-      nama_dokumen_salah,
-      nama_dokumen_benar,
-      nama_orang_salah,
-      nama_orang_benar,
-    } = this.state;
+    const {nama, umur, pekerjaan, alamat, kota_tujuan, daftarKayu} = this.state;
+    let blankJenis = 0;
+    let blankJumlah = 0;
+    let blankPanjang = 0;
+    let blankLebar = 0;
+    let blankTebal = 0;
+
+    for (let x = 0; x < daftarKayu.length; x++) {
+      if (daftarKayu[x].jenis == '') {
+        blankJenis += 1;
+      } else if (daftarKayu[x].jumlah == '') {
+        blankJumlah += 1;
+      } else if (daftarKayu[x].panjang == '') {
+        blankPanjang += 1;
+      } else if (daftarKayu[x].lebar == '') {
+        blankLebar += 1;
+      } else if (daftarKayu[x].tebal == '') {
+        blankTebal += 1;
+      }
+    }
     if (
-      nama_dokumen_salah != '' &&
-      nama_orang_salah != '' &&
-      nama_dokumen_benar != '' &&
-      nama_orang_benar != ''
+      nama != '' &&
+      umur != '' &&
+      pekerjaan != '' &&
+      alamat != '' &&
+      kota_tujuan != '' &&
+      daftarKayu.length != 0 &&
+      blankJenis == 0 &&
+      blankJumlah == 0 &&
+      blankLebar == 0 &&
+      blankPanjang == 0 &&
+      blankTebal == 0
     ) {
       this.setState({modalVisible: true});
-      const url = 'https://api.istudios.id/v1/layanansurat/bedanama/';
+      const url = 'https://api.istudios.id/v1/layanansurat/skau/';
 
       const datas = {
         atribut: {
-          dokumen_salah: {
-            nama_dokumen: nama_dokumen_salah,
-            nama_orang: nama_orang_salah,
-          },
-          dokumen_benar: {
-            nama_dokumen: nama_dokumen_benar,
-            nama_orang: nama_orang_benar,
-          },
+          nama,
+          umur,
+          pekerjaan,
+          alamat,
+          kota_tujuan,
+          daftar_kayu: daftarKayu,
         },
       };
       axios
@@ -251,6 +270,7 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
               Umur
             </Text>
             <TextInput
+              keyboardType="numeric"
               value={this.state.umur}
               onChangeText={(teks) => this.setState({umur: teks})}
               style={{
@@ -405,6 +425,7 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
                     Panjang
                   </Text>
                   <TextInput
+                    keyboardType="numeric"
                     value={value.panjang}
                     onChangeText={(text) => this.inputPanjangKayu(text, key)}
                     style={{
@@ -431,6 +452,7 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
                     Lebar
                   </Text>
                   <TextInput
+                    keyboardType="numeric"
                     value={value.lebar}
                     onChangeText={(text) => this.inputLebarKayu(text, key)}
                     style={{
@@ -457,6 +479,7 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
                     Tebal
                   </Text>
                   <TextInput
+                    keyboardType="numeric"
                     value={value.tebal}
                     onChangeText={(text) => this.inputTebalKayu(text, key)}
                     style={{
@@ -525,8 +548,7 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
             </View>
           </View>
           <View style={{padding: 10, flexDirection: 'row', width: '100%'}}>
-            <TouchableNativeFeedback
-              onPress={() => alert('Belum dihubungkan ke API !')}>
+            <TouchableNativeFeedback onPress={() => this.tambahLayanan()}>
               <View
                 style={{
                   height: 40,
@@ -539,7 +561,8 @@ class SuratKeteranganAsalUsulKayu extends React.Component {
                 <Text style={{color: 'white'}}>Submit</Text>
               </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => this.props.navigation.goBack()}>
               <View
                 style={{
                   height: 40,
