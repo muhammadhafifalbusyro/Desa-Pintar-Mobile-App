@@ -100,30 +100,9 @@ class KeteranganTidakMemilikiBantuanSosial extends React.Component {
           animationType="slide"
           transparent={true}
           onRequestClose={() => this.setState({visible: false})}>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0,0,0,0.1)',
-            }}>
-            <View
-              style={{
-                height: '40%',
-                width: '90%',
-                backgroundColor: 'white',
-                elevation: 5,
-                borderRadius: 5,
-              }}>
-              <View
-                style={{
-                  height: 50,
-                  width: '100%',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderBottomWidth: 1,
-                  borderColor: 'rgba(0,0,0,0.3)',
-                }}>
+          <View style={styles.wrapModal}>
+            <View style={styles.boxModal}>
+              <View style={styles.titleModalKeluarga}>
                 <Text style={{fontWeight: 'bold', color: '#444444'}}>
                   Pilih Nama
                 </Text>
@@ -131,16 +110,7 @@ class KeteranganTidakMemilikiBantuanSosial extends React.Component {
               <ScrollView style={{flex: 1, padding: 10}}>
                 {this.state.data.map((value, key) => {
                   return (
-                    <View
-                      key={key}
-                      style={{
-                        height: 40,
-                        marginBottom: 3,
-                        width: '100%',
-                        padding: 5,
-                        borderBottomWidth: 1,
-                        borderColor: 'rgba(0,0,0,0.3)',
-                      }}>
+                    <View key={key} style={styles.boxListKeluarga}>
                       <Text
                         onPress={() =>
                           this.setState({
@@ -168,23 +138,8 @@ class KeteranganTidakMemilikiBantuanSosial extends React.Component {
               ToastAndroid.CENTER,
             );
           }}>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0,0,0,0.1)',
-            }}>
-            <View
-              style={{
-                height: 100,
-                width: 100,
-                backgroundColor: 'white',
-                elevation: 5,
-                borderRadius: 5,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+          <View style={styles.containerModalLoading}>
+            <View style={styles.boxModalLoading}>
               <ActivityIndicator size="large" color="#19d2ba" />
               <Text>Loading...</Text>
             </View>
@@ -413,5 +368,49 @@ const styles = StyleSheet.create({
   textPersyaratan: {
     fontWeight: 'bold',
     color: '#444444',
+  },
+  wrapModal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.1)',
+  },
+  boxModal: {
+    height: '40%',
+    width: '90%',
+    backgroundColor: 'white',
+    elevation: 5,
+    borderRadius: 5,
+  },
+  titleModalKeluarga: {
+    height: 50,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: 'rgba(0,0,0,0.3)',
+  },
+  boxListKeluarga: {
+    height: 40,
+    marginBottom: 3,
+    width: '100%',
+    padding: 5,
+    borderBottomWidth: 1,
+    borderColor: 'rgba(0,0,0,0.3)',
+  },
+  containerModalLoading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.1)',
+  },
+  boxModalLoading: {
+    height: 100,
+    width: 100,
+    backgroundColor: 'white',
+    elevation: 5,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

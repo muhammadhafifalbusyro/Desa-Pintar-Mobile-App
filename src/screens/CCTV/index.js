@@ -19,10 +19,10 @@ import Icon from 'react-native-vector-icons/Feather';
 import MapView, {Polygon, Polyline, Marker} from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {WebView} from 'react-native-webview';
-import VideoPlayer from 'react-native-video-player'
+import VideoPlayer from 'react-native-video-player';
 
 const heighWind = Dimensions.get('window').height;
-const widthWind = Dimensions.get('window').width
+const widthWind = Dimensions.get('window').width;
 
 const CORRR = [
   {longitude: 122.86067468122086, latitude: 0.781962414844489},
@@ -218,13 +218,13 @@ class CCTV extends React.Component {
                 backgroundColor: 'white',
                 width: '100%',
                 height: '100%',
-                justifyContent:'center'
+                justifyContent: 'center',
               }}>
               <VideoPlayer
                 autoplay={true}
-                video={{ uri: this.state.linkVideo }}
+                video={{uri: this.state.linkVideo}}
                 disableSeek={true}
-            />
+              />
             </View>
             <TouchableOpacity
               style={{
@@ -476,6 +476,3 @@ const styles = StyleSheet.create({
 //     );
 //   }
 // }
-
-
-
